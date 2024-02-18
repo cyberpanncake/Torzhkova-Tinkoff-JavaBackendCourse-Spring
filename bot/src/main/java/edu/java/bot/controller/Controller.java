@@ -9,13 +9,12 @@ import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SetMyCommands;
 import com.pengrad.telegrambot.response.SendResponse;
 import edu.java.bot.command.Command;
-import edu.java.bot.command.exception.command.CommandException;
 import edu.java.bot.configuration.ApplicationConfig;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
@@ -30,33 +29,32 @@ public class Controller {
 
     private int processUpdates(List<Update> updates) {
         for (Update update : updates) {
-            String message = "Произошла непредвиденная ошибка. Попробуйте переформулировать запрос";
+            long chatId = update.message().chat().id();
+            String message;
             Command command;
             try {
                 command = Command.parse(update);
-                try {
-                    message = command.execute(update);
-                } catch (Exception e) {
-                    log.error("");
-                }
-            } catch (CommandException e) {
-                message = "Неизвестная команда";
+                message = command.execute(update);
+            } catch (Exception e) {
+                message = e.getMessage();
+                log.info("%s. Чат %d. Сообщение: \"%s\". Ошибка: \"%s\""
+                    .formatted(LocalDateTime.now(), chatId, update.message().text(), e.getMessage()));
             }
-            long chatId = update.message().chat().id();
             SendResponse response = bot.execute(new SendMessage(chatId, message));
             if (!response.isOk()) {
-                log.error("%s. Ошибка в ответе из чата %d".formatted(LocalDateTime.now(), chatId));
+                log.error("%s. Чат %d".formatted(LocalDateTime.now(), chatId));
             }
         }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 
     private void processException(TelegramException e) {
+        LocalDateTime now = LocalDateTime.now();
         if (e.response() != null) {
-            log.error("%s. %s. %s".formatted(LocalDateTime.now(), e.response().errorCode(),
+            log.error("%s. %s. %s".formatted(now, e.response().errorCode(),
                 e.response().description()));
         } else {
-            log.error("%s. Непредвиденная ошибка".formatted(LocalDateTime.now()));
+            log.error("%s. Неизвестная ошибка".formatted(now));
         }
     }
 
