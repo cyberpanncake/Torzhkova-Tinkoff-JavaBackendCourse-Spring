@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -25,6 +26,9 @@ public enum Command {
     TRACK("начать отслеживание ссылки", Command::track),
     UNTRACK("прекратить отслеживание ссылки", Command::untrack),
     LIST("показать список отслеживаемых ссылок", Command::list);
+
+    @Setter
+    private static ScrapperService service = new ScrapperService();
 
     @Getter
     private final String description;
@@ -65,10 +69,10 @@ public enum Command {
     private static String start(Long userId, String[] params) throws ParameterException {
         checkParamsNumber(params, 0);
         String result;
-        if (ScrapperService.isUserRegistered(userId)) {
+        if (service.isUserRegistered(userId)) {
             result = "Вы уже зарегистрировались";
         } else {
-            ScrapperService.registerUser(userId);
+            service.registerUser(userId);
             result = "Вы успешно зарегистрировались";
         }
         return result;
@@ -87,10 +91,10 @@ public enum Command {
         String link = params[0];
         Link.parse(link);
         checkUserRegistration(userId);
-        if (ScrapperService.isLinkRegistered(userId, link)) {
+        if (service.isLinkRegistered(userId, link)) {
             throw new LinkRegistrationException("Ссылка уже зарегистрирована");
         }
-        ScrapperService.addLink(userId, link);
+        service.addLink(userId, link);
         return "Ссылка добавлена в отслеживаемые";
     }
 
@@ -100,17 +104,17 @@ public enum Command {
         String link = params[0];
         Link.parse(link);
         checkUserRegistration(userId);
-        if (ScrapperService.isLinkRegistered(userId, link)) {
+        if (service.isLinkRegistered(userId, link)) {
             throw new LinkRegistrationException("Ссылка не была зарегистрирована");
         }
-        ScrapperService.deleteLink(userId, link);
+        service.deleteLink(userId, link);
         return "Ссылка удалена из отслеживаемых";
     }
 
     private static String list(Long userId, String[] params) throws ParameterException, UnregisteredUserException {
         checkParamsNumber(params, 0);
         checkUserRegistration(userId);
-        List<String> links = ScrapperService.getLinks(userId);
+        List<String> links = service.getLinks(userId);
         String result;
         if (links.isEmpty()) {
             result = "У вас нет отслеживаемых ссылок";
@@ -129,7 +133,7 @@ public enum Command {
     }
 
     private static void checkUserRegistration(Long userId) throws UnregisteredUserException {
-        if (!ScrapperService.isUserRegistered(userId)) {
+        if (!service.isUserRegistered(userId)) {
             throw new UnregisteredUserException();
         }
     }
