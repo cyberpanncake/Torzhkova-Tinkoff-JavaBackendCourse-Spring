@@ -104,7 +104,7 @@ public enum Command {
         String link = params[0];
         Link.parse(link);
         checkUserRegistration(userId);
-        if (service.isLinkRegistered(userId, link)) {
+        if (!service.isLinkRegistered(userId, link)) {
             throw new LinkRegistrationException("Ссылка не была зарегистрирована");
         }
         service.deleteLink(userId, link);
