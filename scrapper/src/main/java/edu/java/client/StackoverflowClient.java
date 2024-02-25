@@ -1,11 +1,22 @@
 package edu.java.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.java.dto.StackoverflowResponse;
 import java.util.Optional;
 import java.util.Properties;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 
 public class StackoverflowClient extends AbstractClient {
     private static final String DEFAULT_URL = new Properties().getProperty("app.base-url.stackoverflow");
+    private final static ObjectMapper MAPPER = new ObjectMapper();
+
+    static {
+        MAPPER.registerModule(new JavaTimeModule());
+    }
 
     public StackoverflowClient() {
         super(DEFAULT_URL);
@@ -15,9 +26,9 @@ public class StackoverflowClient extends AbstractClient {
         super(baseUrl);
     }
 
-    public Optional<StackoverflowResponse> getUpdate(Long questionId) {
+    public Optional<StackoverflowResponse> getUpdate(long questionId) {
         String request = String.format("questions/%d/answers", questionId);
-        return Optional.ofNullable(client.get()
+        Mono<JsonNode> jsonNodeMono = client.get()
             .uri(uriBuilder -> uriBuilder
                 .path(request)
                 .queryParam("site", "stackoverflow")
@@ -26,8 +37,13 @@ public class StackoverflowClient extends AbstractClient {
                 .queryParam("pagesize", 1)
                 .build())
             .retrieve()
-            .bodyToMono(StackoverflowResponse.class)
-            .block()
-        );
+            .bodyToMono(JsonNode.class);
+        try {
+            JsonNode root = jsonNodeMono.block();
+            JsonNode update = root.get("items").get(0);
+            return Optional.ofNullable(MAPPER.treeToValue(update, StackoverflowResponse.class));
+        } catch (WebClientResponseException | NullPointerException | JsonProcessingException e) {
+            return null;
+        }
     }
 }
