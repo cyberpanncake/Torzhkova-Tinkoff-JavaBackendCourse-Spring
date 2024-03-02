@@ -13,12 +13,14 @@ public record GithubResponse(
     @JsonProperty("created_at")
     OffsetDateTime createdAt
 ) {
-        @JsonIgnoreProperties(ignoreUnknown = true)
-        public record Actor(
-            @JsonProperty("display_login")
-            String displayLogin
-        ) {}
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public record Actor(
+        @JsonProperty("display_login")
+        String displayLogin
+    ) {
+    }
 
-        @JsonIgnoreProperties(ignoreUnknown = true)
-        public record Repository(String name) {}
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public record Repository(String name) {
+    }
 }

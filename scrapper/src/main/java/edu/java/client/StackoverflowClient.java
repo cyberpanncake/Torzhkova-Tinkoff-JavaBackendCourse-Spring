@@ -6,20 +6,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.java.dto.StackoverflowResponse;
 import java.util.Optional;
-import java.util.Properties;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 public class StackoverflowClient extends AbstractClient {
-    private static final String DEFAULT_URL = new Properties().getProperty("app.base-url.stackoverflow");
     private final static ObjectMapper MAPPER = new ObjectMapper();
 
     static {
         MAPPER.registerModule(new JavaTimeModule());
-    }
-
-    public StackoverflowClient() {
-        super(DEFAULT_URL);
     }
 
     public StackoverflowClient(String baseUrl) {

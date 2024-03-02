@@ -2,15 +2,9 @@ package edu.java.client;
 
 import edu.java.dto.GithubResponse;
 import java.util.Optional;
-import java.util.Properties;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 public class GithubClient extends AbstractClient {
-    private static final String DEFAULT_URL = new Properties().getProperty("app.base-url.github");
-
-    public GithubClient() {
-        super(DEFAULT_URL);
-    }
 
     public GithubClient(String baseUrl) {
         super(baseUrl);
