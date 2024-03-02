@@ -1,7 +1,6 @@
 package edu.java.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.OffsetDateTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -10,13 +9,13 @@ public record GithubResponse(
     String type,
     Actor actor,
     Repository repo,
-    @JsonProperty("created_at")
-    OffsetDateTime createdAt
+    @SuppressWarnings("RecordComponentName")
+    OffsetDateTime created_at
 ) {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record Actor(
-        @JsonProperty("display_login")
-        String displayLogin
+        @SuppressWarnings("RecordComponentName")
+        String display_login
     ) {
     }
 
