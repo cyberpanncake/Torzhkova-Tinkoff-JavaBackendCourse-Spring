@@ -1,15 +1,16 @@
 package edu.java.bot;
 
 import edu.java.bot.service.ScrapperService;
+import lombok.Setter;
 import java.util.List;
 
 public class TestScrapperService extends ScrapperService {
-    private final boolean isUserRegistered;
-    private final List<String> links;
+    @Setter
+    private boolean isUserRegistered;
+    @Setter
+    private List<String> links;
 
-    public TestScrapperService(boolean isUserRegistered, List<String> links) {
-        this.isUserRegistered = isUserRegistered;
-        this.links = links;
+    public TestScrapperService() {
     }
 
     @Override
