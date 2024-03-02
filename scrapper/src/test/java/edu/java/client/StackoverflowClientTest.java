@@ -36,7 +36,7 @@ class StackoverflowClientTest {
     }
 
     @Test
-    public void getUpdate_Ok() {
+    public void getUpdate_Ok() throws ResponseException {
         long questionId = 78055556;
         String response = """
             {
@@ -109,8 +109,7 @@ class StackoverflowClientTest {
             .willReturn(aResponse().withStatus(400)
                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .withBody(response)));
-        Optional<StackoverflowResponse> actual = client.getUpdate(questionId);
-        Assertions.assertNull(actual);
+        Assertions.assertThrows(ResponseException.class, () -> client.getUpdate(questionId));
     }
 
     private StackoverflowResponse parse(String json) {

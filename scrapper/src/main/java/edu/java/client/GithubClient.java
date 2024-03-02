@@ -1,7 +1,9 @@
 package edu.java.client;
 
 import edu.java.dto.GithubResponse;
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Stream;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 public class GithubClient extends AbstractClient {
@@ -10,23 +12,21 @@ public class GithubClient extends AbstractClient {
         super(baseUrl);
     }
 
-    public Optional<GithubResponse> getUpdate(String author, String repository) {
-        String request = String.format("networks/%s/%s/events", author, repository);
+    public Optional<GithubResponse> getUpdate(String author, String repository) throws ResponseException {
         try {
             GithubResponse[] responses = client.get()
                 .uri(uriBuilder -> uriBuilder
-                    .path(request)
+                    .path("/repos/{author}/{repo}/events")
                     .queryParam("per_page", 1)
-                    .build())
+                    .build(author, repository))
                 .retrieve()
                 .bodyToMono(GithubResponse[].class)
                 .block();
-            if (responses == null || responses.length == 0) {
-                return Optional.empty();
-            }
-            return Optional.of(responses[0]);
+            return Stream.ofNullable(responses)
+                .flatMap(Arrays::stream)
+                .findFirst();
         } catch (WebClientResponseException e) {
-            return null;
+            throw new ResponseException();
         }
     }
 }

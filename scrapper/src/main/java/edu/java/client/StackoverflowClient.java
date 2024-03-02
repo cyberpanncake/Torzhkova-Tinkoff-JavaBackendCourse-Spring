@@ -20,16 +20,15 @@ public class StackoverflowClient extends AbstractClient {
         super(baseUrl);
     }
 
-    public Optional<StackoverflowResponse> getUpdate(long questionId) {
-        String request = String.format("questions/%d/answers", questionId);
+    public Optional<StackoverflowResponse> getUpdate(long questionId) throws ResponseException {
         Mono<JsonNode> jsonNodeMono = client.get()
             .uri(uriBuilder -> uriBuilder
-                .path(request)
+                .path("/questions/{questionId}/answers")
                 .queryParam("site", "stackoverflow")
                 .queryParam("sort", "activity")
                 .queryParam("order", "desc")
                 .queryParam("pagesize", 1)
-                .build())
+                .build(questionId))
             .retrieve()
             .bodyToMono(JsonNode.class);
         try {
@@ -37,7 +36,7 @@ public class StackoverflowClient extends AbstractClient {
             JsonNode update = root.get("items").get(0);
             return Optional.ofNullable(MAPPER.treeToValue(update, StackoverflowResponse.class));
         } catch (WebClientResponseException | NullPointerException | JsonProcessingException e) {
-            return null;
+            throw new ResponseException();
         }
     }
 }

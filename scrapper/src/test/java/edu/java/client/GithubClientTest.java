@@ -37,37 +37,37 @@ class GithubClientTest {
     }
 
     @Test
-    public void getUpdate_Ok() {
+    public void getUpdate_Ok() throws ResponseException {
         String author = "cyberpanncake";
         String repo = "Torzhkova-Tinkoff-JavaBackendCourse";
         String response = """
             [
-               {
-                 "id": "35443777108",
-                 "type": "WatchEvent",
-                 "actor": {
-                   "id": 130314986,
-                   "login": "saundler",
-                   "display_login": "saundler",
-                   "gravatar_id": "",
-                   "url": "https://api.github.com/users/saundler",
-                   "avatar_url": "https://avatars.githubusercontent.com/u/130314986?"
-                 },
-                 "repo": {
-                   "id": 705261439,
-                   "name": "cyberpanncake/Torzhkova-Tinkoff-JavaBackendCourse",
-                   "url": "https://api.github.com/repos/cyberpanncake/Torzhkova-Tinkoff-JavaBackendCourse"
-                 },
-                 "payload": {
-                   "action": "started"
-                 },
-                 "public": true,
-                 "created_at": "2024-02-06T12:55:12Z"
-               }
-             ]
+              {
+                "id": "35443777108",
+                "type": "WatchEvent",
+                "actor": {
+                  "id": 130314986,
+                  "login": "saundler",
+                  "display_login": "saundler",
+                  "gravatar_id": "",
+                  "url": "https://api.github.com/users/saundler",
+                  "avatar_url": "https://avatars.githubusercontent.com/u/130314986?"
+                },
+                "repo": {
+                  "id": 705261439,
+                  "name": "cyberpanncake/Torzhkova-Tinkoff-JavaBackendCourse",
+                  "url": "https://api.github.com/repos/cyberpanncake/Torzhkova-Tinkoff-JavaBackendCourse"
+                },
+                "payload": {
+                  "action": "started"
+                },
+                "public": true,
+                "created_at": "2024-02-06T12:55:12Z"
+              }
+            ]
             """;
         String uri = UriComponentsBuilder.newInstance()
-            .path("/networks/{author}/{repo}/events")
+            .path("/repos/{author}/{repo}/events")
             .uriVariables(Map.of("author", author, "repo", repo))
             .queryParam("per_page", 1)
             .build()
@@ -102,8 +102,7 @@ class GithubClientTest {
             .willReturn(aResponse().withStatus(400)
                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .withBody(response)));
-        Optional<GithubResponse> actual = client.getUpdate(author, repo);
-        Assertions.assertNull(actual);
+        Assertions.assertThrows(ResponseException.class, () -> client.getUpdate(author, repo));
     }
 
     private GithubResponse parse(String json) {
