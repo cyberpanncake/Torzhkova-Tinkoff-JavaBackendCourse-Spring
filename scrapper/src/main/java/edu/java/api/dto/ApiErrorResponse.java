@@ -1,4 +1,4 @@
-package edu.java.bot.api.dto;
+package edu.java.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

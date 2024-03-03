@@ -16,6 +16,7 @@ import edu.java.bot.exception.link.LinkRegistrationException;
 import edu.java.bot.exception.link.NotLinkException;
 import edu.java.bot.exception.parameter.ParameterException;
 import edu.java.bot.exception.parameter.WrongNumberParametersException;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import java.util.List;
 import static org.mockito.Mockito.when;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -41,8 +41,7 @@ class BotApplicationTest {
     @Mock
     private User userMock;
 
-    @Autowired
-    BotApplicationTest(TelegramBotConfig config) {
+    @Autowired BotApplicationTest(TelegramBotConfig config) {
         this.config = config;
         this.service = new TestScrapperService();
         for (Command command : config.commands()) {
@@ -65,15 +64,19 @@ class BotApplicationTest {
     @Test
     void notCommandExceptionTest() {
         setMessage("start");
-        Assertions.assertThrows(NotCommandException.class,
-            () -> AbstractCommand.parse(updateMock, config.commands()));
+        Assertions.assertThrows(
+            NotCommandException.class,
+            () -> AbstractCommand.parse(updateMock, config.commands())
+        );
     }
 
     @Test
     void commandNotExistExceptionTest() {
         setMessage("/end");
-        Assertions.assertThrows(CommandNotExistException.class,
-            () -> AbstractCommand.parse(updateMock, config.commands()));
+        Assertions.assertThrows(
+            CommandNotExistException.class,
+            () -> AbstractCommand.parse(updateMock, config.commands())
+        );
     }
 
     @ParameterizedTest
@@ -106,11 +109,11 @@ class BotApplicationTest {
         setMessage("/help");
         Command command = AbstractCommand.parse(updateMock, config.commands());
         String expected = """
-                /start — зарегистрировать пользователя,
-                /help — вывести окно с командами,
-                /track — начать отслеживание ссылки,
-                /untrack — прекратить отслеживание ссылки,
-                /list — показать список отслеживаемых ссылок""";
+            /start — зарегистрировать пользователя,
+            /help — вывести окно с командами,
+            /track — начать отслеживание ссылки,
+            /untrack — прекратить отслеживание ссылки,
+            /list — показать список отслеживаемых ссылок""";
         String actual = command.execute(updateMock);
         Assertions.assertEquals(expected, actual);
     }
@@ -189,17 +192,25 @@ class BotApplicationTest {
 
     private Arguments[] listParams() {
         return new Arguments[] {
-            Arguments.of(List.of(),
-                "У вас нет отслеживаемых ссылок"),
-            Arguments.of(List.of("https://github.com/cyberpanncake"),
-                "1. https://github.com/cyberpanncake"),
-            Arguments.of(List.of("https://github.com/1",
+            Arguments.of(
+                List.of(),
+                "У вас нет отслеживаемых ссылок"
+            ),
+            Arguments.of(
+                List.of("https://github.com/cyberpanncake"),
+                "1. https://github.com/cyberpanncake"
+            ),
+            Arguments.of(
+                List.of(
+                    "https://github.com/1",
                     "https://github.com/2",
-                    "https://github.com/3"),
-                    """
-                            1. https://github.com/1
-                            2. https://github.com/2
-                            3. https://github.com/3""")
+                    "https://github.com/3"
+                ),
+                """
+                    1. https://github.com/1
+                    2. https://github.com/2
+                    3. https://github.com/3"""
+            )
         };
     }
 }

@@ -14,9 +14,9 @@ import org.springframework.context.annotation.Configuration;
 public class ClientConfig {
     private static final String DEFAULT_GITHUB_URL = "https://api.github.com/";
     private static final String DEFAULT_STACKOVERFLOW_URL = "https://api.stackexchange.com/2.3/";
-    @Value("${app.base-url.github}")
+    @Value("${resources.base-url.github}")
     private String githubUrl;
-    @Value("${app.base-url.stackoverflow}")
+    @Value("${resources.base-url.stackoverflow}")
     private String stackoverflowUrl;
     private final ObjectMapper objectMapper;
 

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/updates")
-public class BotController {
+public class UpdateController {
 
     @Operation(summary = "Отправить обновление")
     @ApiResponses(value = {
@@ -29,4 +29,5 @@ public class BotController {
     public ResponseEntity<Void> updates(@Valid @RequestBody LinkUpdateRequest update) {
         return ResponseEntity.ok().build();
     }
+
 }

@@ -1,8 +1,10 @@
 app:
   scheduler:
     enable: true
-    interval: 10s
-    force-check-delay: 10s
+    interval: 10000
+    force-check-delay: 10000
+
+resources:
   base-url:
     github: https://api.github.com/
     stackoverflow: https://api.stackexchange.com/2.3/
@@ -13,8 +15,13 @@ spring:
   jackson:
     property-naming-strategy: SNAKE_CASE
 
+
 server:
   port: 8080
 
 logging:
   config: classpath:log4j2-plain.xml
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui

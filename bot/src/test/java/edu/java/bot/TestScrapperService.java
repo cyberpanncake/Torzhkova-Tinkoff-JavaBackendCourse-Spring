@@ -1,8 +1,8 @@
 package edu.java.bot;
 
 import edu.java.bot.service.ScrapperService;
-import lombok.Setter;
 import java.util.List;
+import lombok.Setter;
 
 public class TestScrapperService extends ScrapperService {
     @Setter
