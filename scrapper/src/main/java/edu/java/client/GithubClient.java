@@ -1,11 +1,12 @@
 package edu.java.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.java.dto.GithubResponse;
-import java.util.Arrays;
 import java.util.Optional;
-import java.util.stream.Stream;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 
 public class GithubClient extends AbstractClient {
 
@@ -14,19 +15,18 @@ public class GithubClient extends AbstractClient {
     }
 
     public Optional<GithubResponse> getUpdate(String author, String repository) throws ResponseException {
+        Mono<JsonNode> jsonNodeMono = client.get()
+            .uri(uriBuilder -> uriBuilder
+                .path("/repos/{author}/{repo}/events")
+                .queryParam("per_page", 1)
+                .build(author, repository))
+            .retrieve()
+            .bodyToMono(JsonNode.class);
         try {
-            GithubResponse[] responses = client.get()
-                .uri(uriBuilder -> uriBuilder
-                    .path("/repos/{author}/{repo}/events")
-                    .queryParam("per_page", 1)
-                    .build(author, repository))
-                .retrieve()
-                .bodyToMono(GithubResponse[].class)
-                .block();
-            return Stream.ofNullable(responses)
-                .flatMap(Arrays::stream)
-                .findFirst();
-        } catch (WebClientResponseException e) {
+            JsonNode root = jsonNodeMono.block();
+            JsonNode update = root.get(0);
+            return Optional.ofNullable(mapper.treeToValue(update, GithubResponse.class));
+        } catch (WebClientResponseException | NullPointerException | JsonProcessingException e) {
             throw new ResponseException();
         }
     }
