@@ -1,5 +1,6 @@
 package edu.java.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.java.client.GithubClient;
 import edu.java.client.StackoverflowClient;
 import lombok.RequiredArgsConstructor;
@@ -17,13 +18,13 @@ public class ClientConfig {
     private String githubUrl;
     @Value("${app.base-url.stackoverflow}")
     private String stackoverflowUrl;
-    private final ObjectMapperConfig mapperConfig;
+    private final ObjectMapper objectMapper;
 
     @Bean
     public GithubClient githubClient() {
         return new GithubClient(
             Strings.isNotEmpty(githubUrl) ? githubUrl : DEFAULT_GITHUB_URL,
-            mapperConfig.objectMapper()
+            objectMapper
         );
     }
 
@@ -31,7 +32,7 @@ public class ClientConfig {
     public StackoverflowClient stackoverflowClient() {
         return new StackoverflowClient(
             Strings.isNotEmpty(stackoverflowUrl) ? stackoverflowUrl : DEFAULT_STACKOVERFLOW_URL,
-            mapperConfig.objectMapper()
+            objectMapper
         );
     }
 }
