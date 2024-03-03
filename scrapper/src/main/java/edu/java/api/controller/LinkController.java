@@ -35,6 +35,9 @@ public class LinkController {
     })
     @GetMapping
     public ResponseEntity<ListLinksResponse> getLinks(@RequestHeader(name = "Tg-Chat-Id") long chatId) {
+        /*
+        TODO: получение списка ссылок
+         */
         return ResponseEntity.ok(new ListLinksResponse(new LinkResponse[0], 1));
     }
 
@@ -52,6 +55,10 @@ public class LinkController {
         @RequestHeader(name = "Tg-Chat-Id") long chatId,
         @Valid @RequestBody AddLinkRequest request
     ) {
+        /*
+        TODO: добавление ссылки
+        может быть брошено LinkAdditionException
+         */
         return ResponseEntity.ok(new LinkResponse(0, ""));
     }
 
@@ -72,6 +79,10 @@ public class LinkController {
         @RequestHeader(name = "Tg-Chat-Id") long chatId,
         @Valid @RequestBody RemoveLinkRequest request
     ) {
+        /*
+        TODO: удаление ссылки
+        может быть брошено LinkNotFoundException
+         */
         return ResponseEntity.ok(new LinkResponse(0, ""));
     }
 }

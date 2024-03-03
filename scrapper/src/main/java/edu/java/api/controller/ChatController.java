@@ -27,6 +27,10 @@ public class ChatController {
     })
     @PostMapping("/{id}")
     public ResponseEntity<Void> registerChat(@PathVariable @Positive long id) {
+        /*
+        TODO: регистрация чата
+        может быть брошено ChatRegistrationException
+         */
         return ResponseEntity.ok().build();
     }
 
@@ -42,6 +46,10 @@ public class ChatController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteChat(@PathVariable @Positive long id) {
+        /*
+        TODO: удаление чата
+        может быть брошено ChatNotFoundException
+         */
         return ResponseEntity.ok().build();
     }
 }
