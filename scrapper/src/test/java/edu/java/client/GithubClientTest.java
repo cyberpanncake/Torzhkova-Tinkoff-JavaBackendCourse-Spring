@@ -2,8 +2,8 @@ package edu.java.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import edu.java.configuration.ObjectMapperConfig;
 import edu.java.dto.GithubResponse;
 import java.util.List;
 import java.util.Map;
@@ -23,12 +23,17 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 class GithubClientTest {
     private WireMockServer server;
     private GithubClient client;
+    private final ObjectMapper mapper;
+
+    GithubClientTest() {
+        this.mapper = new ObjectMapperConfig().objectMapper();
+    }
 
     @BeforeEach
     void setUp() {
         server = new WireMockServer();
         server.start();
-        client = new GithubClient(server.baseUrl());
+        client = new GithubClient(server.baseUrl(), mapper);
     }
 
     @AfterEach
@@ -106,10 +111,8 @@ class GithubClientTest {
     }
 
     private GithubResponse parse(String json) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
         try {
-            List<GithubResponse> responses = objectMapper.readValue(json, new TypeReference<>() {
+            List<GithubResponse> responses = mapper.readValue(json, new TypeReference<>() {
             });
             return responses.get(0);
         } catch (Exception e) {

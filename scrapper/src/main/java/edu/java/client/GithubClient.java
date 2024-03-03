@@ -1,5 +1,6 @@
 package edu.java.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.java.dto.GithubResponse;
 import java.util.Arrays;
 import java.util.Optional;
@@ -8,8 +9,8 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 public class GithubClient extends AbstractClient {
 
-    public GithubClient(String baseUrl) {
-        super(baseUrl);
+    public GithubClient(String baseUrl, ObjectMapper mapper) {
+        super(baseUrl, mapper);
     }
 
     public Optional<GithubResponse> getUpdate(String author, String repository) throws ResponseException {

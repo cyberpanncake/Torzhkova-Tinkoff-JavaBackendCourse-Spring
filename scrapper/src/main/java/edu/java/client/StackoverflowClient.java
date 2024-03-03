@@ -3,21 +3,15 @@ package edu.java.client;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.java.dto.StackoverflowResponse;
 import java.util.Optional;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 public class StackoverflowClient extends AbstractClient {
-    private final static ObjectMapper MAPPER = new ObjectMapper();
 
-    static {
-        MAPPER.registerModule(new JavaTimeModule());
-    }
-
-    public StackoverflowClient(String baseUrl) {
-        super(baseUrl);
+    public StackoverflowClient(String baseUrl, ObjectMapper mapper) {
+        super(baseUrl, mapper);
     }
 
     public Optional<StackoverflowResponse> getUpdate(long questionId) throws ResponseException {
@@ -34,7 +28,7 @@ public class StackoverflowClient extends AbstractClient {
         try {
             JsonNode root = jsonNodeMono.block();
             JsonNode update = root.get("items").get(0);
-            return Optional.ofNullable(MAPPER.treeToValue(update, StackoverflowResponse.class));
+            return Optional.ofNullable(mapper.treeToValue(update, StackoverflowResponse.class));
         } catch (WebClientResponseException | NullPointerException | JsonProcessingException e) {
             throw new ResponseException();
         }

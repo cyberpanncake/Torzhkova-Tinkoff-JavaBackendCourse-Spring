@@ -2,8 +2,8 @@ package edu.java.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import edu.java.configuration.ObjectMapperConfig;
 import edu.java.dto.StackoverflowResponse;
 import java.util.Map;
 import java.util.Optional;
@@ -22,12 +22,17 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 class StackoverflowClientTest {
     private WireMockServer server;
     private StackoverflowClient client;
+    private final ObjectMapper mapper;
+
+    StackoverflowClientTest() {
+        this.mapper = new ObjectMapperConfig().objectMapper();
+    }
 
     @BeforeEach
     void setUp() {
         server = new WireMockServer();
         server.start();
-        client = new StackoverflowClient(server.baseUrl());
+        client = new StackoverflowClient(server.baseUrl(), mapper);
     }
 
     @AfterEach
@@ -114,11 +119,9 @@ class StackoverflowClientTest {
 
     private StackoverflowResponse parse(String json) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new JavaTimeModule());
-            JsonNode rootNode = objectMapper.readTree(json);
+            JsonNode rootNode = mapper.readTree(json);
             JsonNode update = rootNode.get("items").get(0);
-            return objectMapper.treeToValue(update, StackoverflowResponse.class);
+            return mapper.treeToValue(update, StackoverflowResponse.class);
         } catch (Exception e) {
             return null;
         }
