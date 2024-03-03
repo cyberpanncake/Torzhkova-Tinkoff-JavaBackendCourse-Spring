@@ -9,13 +9,11 @@ public record GithubResponse(
     String type,
     Actor actor,
     Repository repo,
-    @SuppressWarnings("RecordComponentName")
-    OffsetDateTime created_at
+    OffsetDateTime createdAt
 ) {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record Actor(
-        @SuppressWarnings("RecordComponentName")
-        String display_login
+        String displayLogin
     ) {
     }
 
