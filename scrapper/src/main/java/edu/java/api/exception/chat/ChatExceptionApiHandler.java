@@ -23,8 +23,8 @@ public class ChatExceptionApiHandler {
             .body(error);
     }
 
-    @ExceptionHandler(ChatRegistrationException.class)
-    public ResponseEntity<ApiErrorResponse> chatNotFoundException(ChatRegistrationException exception) {
+    @ExceptionHandler(ChatNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> chatNotFoundException(ChatNotFoundException exception) {
         ApiErrorResponse error = new ApiErrorResponse(
             "Чат с id не найден",
             HttpStatus.NOT_FOUND.toString(),
