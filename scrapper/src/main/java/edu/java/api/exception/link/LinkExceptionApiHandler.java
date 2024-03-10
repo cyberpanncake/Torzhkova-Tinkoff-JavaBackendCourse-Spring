@@ -23,8 +23,8 @@ public class LinkExceptionApiHandler {
             .body(error);
     }
 
-    @ExceptionHandler(LinkAdditionException.class)
-    public ResponseEntity<ApiErrorResponse> linkNotFoundException(LinkAdditionException exception) {
+    @ExceptionHandler(LinkNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> linkNotFoundException(LinkNotFoundException exception) {
         ApiErrorResponse error = new ApiErrorResponse(
             "Ссылка не найдена",
             HttpStatus.NOT_FOUND.toString(),

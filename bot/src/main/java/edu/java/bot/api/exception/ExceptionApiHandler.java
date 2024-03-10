@@ -13,7 +13,7 @@ public class ExceptionApiHandler {
     public ResponseEntity<ApiErrorResponse> chatNotExistException(ChatNotExistException exception) {
         ApiErrorResponse error = new ApiErrorResponse(
             "Чат с id %d не существует".formatted(exception.getChatId()),
-            "404",
+            HttpStatus.NOT_FOUND.toString(),
             exception.getClass().getName(),
             exception.getMessage(),
             exception.getStackTrace()
@@ -27,7 +27,7 @@ public class ExceptionApiHandler {
     public ResponseEntity<ApiErrorResponse> anyException(Exception exception) {
         ApiErrorResponse error = new ApiErrorResponse(
             "Неверные параметры запроса",
-            "400",
+            HttpStatus.BAD_REQUEST.toString(),
             exception.getClass().getName(),
             exception.getMessage(),
             exception.getStackTrace()
