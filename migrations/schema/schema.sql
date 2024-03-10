@@ -1,3 +1,5 @@
+--liquibase formatted sql
+
 -- создание таблицы с чатами
 
 create table if not exists chat
