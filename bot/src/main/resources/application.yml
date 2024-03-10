@@ -7,6 +7,10 @@ spring:
   jackson:
     time-zone: UTC
 
+resources:
+  base-url:
+    scrapper: https://localhost:8080
+
 server:
   port: 8090
 
