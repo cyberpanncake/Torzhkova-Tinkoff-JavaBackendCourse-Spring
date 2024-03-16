@@ -1,6 +1,7 @@
 package edu.java.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.java.api.client.BotClient;
 import edu.java.client.GithubClient;
 import edu.java.client.StackoverflowClient;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +15,12 @@ import org.springframework.context.annotation.Configuration;
 public class ClientConfig {
     private static final String DEFAULT_GITHUB_URL = "https://api.github.com/";
     private static final String DEFAULT_STACKOVERFLOW_URL = "https://api.stackexchange.com/2.3/";
-    @Value("${app.base-url.github}")
+    @Value("${resources.base-url.github}")
     private String githubUrl;
-    @Value("${app.base-url.stackoverflow}")
+    @Value("${resources.base-url.stackoverflow}")
     private String stackoverflowUrl;
+    @Value("${resources.base-url.bot}")
+    private String botUrl;
     private final ObjectMapper objectMapper;
 
     @Bean
@@ -32,6 +35,14 @@ public class ClientConfig {
     public StackoverflowClient stackoverflowClient() {
         return new StackoverflowClient(
             Strings.isNotEmpty(stackoverflowUrl) ? stackoverflowUrl : DEFAULT_STACKOVERFLOW_URL,
+            objectMapper
+        );
+    }
+
+    @Bean
+    public BotClient botClient() {
+        return new BotClient(
+            botUrl,
             objectMapper
         );
     }
