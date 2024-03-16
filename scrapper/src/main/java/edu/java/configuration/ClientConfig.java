@@ -1,9 +1,9 @@
 package edu.java.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.java.api.client.BotClient;
-import edu.java.client.GithubClient;
-import edu.java.client.StackoverflowClient;
+import edu.java.client.bot.BotClient;
+import edu.java.client.sources.GithubClient;
+import edu.java.client.sources.StackoverflowClient;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,9 +41,6 @@ public class ClientConfig {
 
     @Bean
     public BotClient botClient() {
-        return new BotClient(
-            botUrl,
-            objectMapper
-        );
+        return new BotClient(botUrl, objectMapper);
     }
 }

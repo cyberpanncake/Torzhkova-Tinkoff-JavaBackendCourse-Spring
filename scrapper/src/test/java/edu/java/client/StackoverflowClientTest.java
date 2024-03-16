@@ -3,6 +3,8 @@ package edu.java.client;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import edu.java.client.sources.ResponseException;
+import edu.java.client.sources.StackoverflowClient;
 import edu.java.configuration.ObjectMapperConfig;
 import edu.java.dto.StackoverflowResponse;
 import java.util.Map;

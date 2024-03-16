@@ -1,4 +1,4 @@
-package edu.java.api.dto;
+package edu.java.api_dto.bot;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -8,7 +8,6 @@ public record ApiErrorResponse(
     String code,
     String exceptionName,
     String exceptionMessage,
-
-    StackTraceElement[] stacktrace
+    String[] stacktrace
 ) {
 }
