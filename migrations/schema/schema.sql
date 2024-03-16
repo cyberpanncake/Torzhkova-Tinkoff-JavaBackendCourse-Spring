@@ -4,7 +4,7 @@
 
 create table if not exists chat
 (
-	id serial,
+	id bigint generated always as identity,
 	tg_id bigint,
 	primary key (id),
 	unique (tg_id)
@@ -14,7 +14,7 @@ create table if not exists chat
 
 create table if not exists link
 (
-	id serial,
+	id bigint generated always as identity,
 	url varchar(2048),
 	last_update timestamp with time zone not null,
 	last_check timestamp with time zone not null,
