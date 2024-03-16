@@ -1,10 +1,10 @@
 package edu.java.api.controller;
 
-import edu.java.api.dto.AddLinkRequest;
-import edu.java.api.dto.ApiErrorResponse;
-import edu.java.api.dto.LinkResponse;
-import edu.java.api.dto.ListLinksResponse;
-import edu.java.api.dto.RemoveLinkRequest;
+import edu.java.api_dto.scrapper.AddLinkRequest;
+import edu.java.api_dto.scrapper.ApiErrorResponse;
+import edu.java.api_dto.scrapper.LinkResponse;
+import edu.java.api_dto.scrapper.ListLinksResponse;
+import edu.java.api_dto.scrapper.RemoveLinkRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -59,7 +59,7 @@ public class LinkController {
         TODO: добавление ссылки
         может быть брошено LinkAdditionException
          */
-        return ResponseEntity.ok(new LinkResponse(0, ""));
+        return ResponseEntity.ok(new LinkResponse(0L, ""));
     }
 
     @Operation(summary = "Убрать отслеживание ссылки")
@@ -83,6 +83,6 @@ public class LinkController {
         TODO: удаление ссылки
         может быть брошено LinkNotFoundException
          */
-        return ResponseEntity.ok(new LinkResponse(0, ""));
+        return ResponseEntity.ok(new LinkResponse(0L, ""));
     }
 }

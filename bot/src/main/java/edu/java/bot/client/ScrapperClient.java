@@ -1,4 +1,4 @@
-package edu.java.bot.api.client;
+package edu.java.bot.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;

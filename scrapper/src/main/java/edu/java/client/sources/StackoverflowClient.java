@@ -1,8 +1,9 @@
-package edu.java.client;
+package edu.java.client.sources;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.java.client.AbstractClient;
 import edu.java.dto.StackoverflowResponse;
 import java.util.Optional;
 import org.springframework.web.reactive.function.client.WebClientResponseException;

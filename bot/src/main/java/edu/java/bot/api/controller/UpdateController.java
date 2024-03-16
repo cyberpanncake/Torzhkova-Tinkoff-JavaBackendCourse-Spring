@@ -1,7 +1,7 @@
 package edu.java.bot.api.controller;
 
-import edu.java.bot.api.dto.ApiErrorResponse;
-import edu.java.bot.api.dto.LinkUpdateRequest;
+import edu.java.api_dto.bot.ApiErrorResponse;
+import edu.java.api_dto.bot.LinkUpdateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -29,5 +29,4 @@ public class UpdateController {
     public ResponseEntity<Void> sendUpdate(@Valid @RequestBody LinkUpdateRequest request) {
         return ResponseEntity.ok().build();
     }
-
 }

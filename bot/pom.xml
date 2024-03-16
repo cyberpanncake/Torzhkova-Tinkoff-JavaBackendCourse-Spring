@@ -128,6 +128,11 @@
             <artifactId>kafka</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>edu.java</groupId>
+            <artifactId>api_dto</artifactId>
+            <version>0.1</version>
+        </dependency>
     </dependencies>
 
     <build>

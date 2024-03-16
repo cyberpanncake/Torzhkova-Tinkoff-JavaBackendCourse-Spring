@@ -49,6 +49,7 @@
     <modules>
         <module>bot</module>
         <module>scrapper</module>
+        <module>api_dto</module>
     </modules>
 
     <dependencyManagement>

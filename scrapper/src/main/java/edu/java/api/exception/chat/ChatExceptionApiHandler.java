@@ -1,6 +1,7 @@
 package edu.java.api.exception.chat;
 
-import edu.java.api.dto.ApiErrorResponse;
+import edu.java.api_dto.scrapper.ApiErrorResponse;
+import java.util.Arrays;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,7 +17,9 @@ public class ChatExceptionApiHandler {
             HttpStatus.BAD_REQUEST.toString(),
             exception.getClass().getName(),
             exception.getMessage(),
-            exception.getStackTrace()
+            Arrays.stream(exception.getStackTrace())
+                .map(StackTraceElement::toString)
+                .toArray(String[]::new)
         );
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
@@ -30,7 +33,9 @@ public class ChatExceptionApiHandler {
             HttpStatus.NOT_FOUND.toString(),
             exception.getClass().getName(),
             exception.getMessage(),
-            exception.getStackTrace()
+            Arrays.stream(exception.getStackTrace())
+                .map(StackTraceElement::toString)
+                .toArray(String[]::new)
         );
         return ResponseEntity
             .status(HttpStatus.NOT_FOUND)
@@ -40,14 +45,16 @@ public class ChatExceptionApiHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> anyException(Exception exception) {
         ApiErrorResponse error = new ApiErrorResponse(
-            "Неверные параметры запроса",
-            HttpStatus.BAD_REQUEST.toString(),
+            "Произошла непредвиденная ошибка на стороне сервера",
+            HttpStatus.INTERNAL_SERVER_ERROR.toString(),
             exception.getClass().getName(),
             exception.getMessage(),
-            exception.getStackTrace()
+            Arrays.stream(exception.getStackTrace())
+                .map(StackTraceElement::toString)
+                .toArray(String[]::new)
         );
         return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(error);
     }
 }

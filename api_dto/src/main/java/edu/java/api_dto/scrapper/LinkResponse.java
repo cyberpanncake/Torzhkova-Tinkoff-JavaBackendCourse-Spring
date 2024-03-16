@@ -1,11 +1,11 @@
-package edu.java.api.dto;
+package edu.java.api_dto.scrapper;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.validator.constraints.URL;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record LinkResponse(
-    long id,
+    Long id,
     @URL
     String url
 ) {

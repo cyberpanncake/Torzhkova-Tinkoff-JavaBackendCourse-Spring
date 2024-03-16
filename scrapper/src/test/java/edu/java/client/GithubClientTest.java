@@ -3,6 +3,8 @@ package edu.java.client;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import edu.java.client.sources.GithubClient;
+import edu.java.client.sources.ResponseException;
 import edu.java.configuration.ObjectMapperConfig;
 import edu.java.dto.GithubResponse;
 import java.util.List;
