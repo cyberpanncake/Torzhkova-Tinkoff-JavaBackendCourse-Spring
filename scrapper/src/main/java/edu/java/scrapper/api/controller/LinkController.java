@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import java.net.URI;
+import java.net.URISyntaxException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,12 +56,12 @@ public class LinkController {
     public ResponseEntity<LinkResponse> addLink(
         @RequestHeader(name = "Tg-Chat-Id") long chatId,
         @Valid @RequestBody AddLinkRequest request
-    ) {
+    ) throws URISyntaxException {
         /*
         TODO: добавление ссылки
         может быть брошено LinkAdditionException
          */
-        return ResponseEntity.ok(new LinkResponse(0L, ""));
+        return ResponseEntity.ok(new LinkResponse(0L, new URI("")));
     }
 
     @Operation(summary = "Убрать отслеживание ссылки")
@@ -78,11 +80,11 @@ public class LinkController {
     public ResponseEntity<LinkResponse> deleteLink(
         @RequestHeader(name = "Tg-Chat-Id") long chatId,
         @Valid @RequestBody RemoveLinkRequest request
-    ) {
+    ) throws URISyntaxException {
         /*
         TODO: удаление ссылки
         может быть брошено LinkNotFoundException
          */
-        return ResponseEntity.ok(new LinkResponse(0L, ""));
+        return ResponseEntity.ok(new LinkResponse(0L, new URI("")));
     }
 }

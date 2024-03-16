@@ -1,13 +1,12 @@
 package edu.java.api_dto.bot;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.validator.constraints.URL;
+import java.net.URI;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record LinkUpdateRequest(
     Long id,
-    @URL
-    String url,
+    URI url,
     String description,
     Long[] tgChatIds
 ) {
