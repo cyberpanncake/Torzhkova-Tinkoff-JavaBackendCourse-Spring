@@ -1,9 +1,9 @@
-package edu.java.bot.command.components;
+package edu.java.bot.telegram.command.components;
 
-import edu.java.bot.command.AbstractCommand;
-import edu.java.bot.command.Command;
-import edu.java.bot.command.CommandUtils;
-import edu.java.bot.exception.parameter.ParameterException;
+import edu.java.bot.telegram.command.AbstractCommand;
+import edu.java.bot.telegram.command.Command;
+import edu.java.bot.telegram.command.CommandUtils;
+import edu.java.bot.telegram.exception.parameter.ParameterException;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.core.annotation.Order;

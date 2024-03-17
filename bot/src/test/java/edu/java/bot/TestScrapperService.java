@@ -1,6 +1,6 @@
 package edu.java.bot;
 
-import edu.java.bot.service.ScrapperService;
+import edu.java.bot.client.service.ScrapperService;
 import java.util.List;
 import lombok.Setter;
 

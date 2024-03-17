@@ -1,4 +1,4 @@
-package edu.java.bot.controller;
+package edu.java.bot.telegram;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.TelegramException;
@@ -6,10 +6,10 @@ import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
-import edu.java.bot.command.AbstractCommand;
-import edu.java.bot.command.Command;
 import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.bot.configuration.TelegramBotConfig;
+import edu.java.bot.telegram.command.AbstractCommand;
+import edu.java.bot.telegram.command.Command;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -18,12 +18,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class Controller {
+public class TgBotController {
     private final TelegramBot bot;
     private final TelegramBotConfig botConfig;
 
     @Autowired
-    public Controller(ApplicationConfig config, TelegramBotConfig botConfig) {
+    public TgBotController(ApplicationConfig config, TelegramBotConfig botConfig) {
         this.botConfig = botConfig;
         bot = botConfig.telegramBot(config);
         bot.setUpdatesListener(this::processUpdates, this::processException);

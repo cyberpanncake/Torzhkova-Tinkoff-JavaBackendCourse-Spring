@@ -1,14 +1,15 @@
-package edu.java.bot.command.components;
+package edu.java.bot.telegram.command.components;
 
-import edu.java.bot.command.AbstractServiceCommand;
-import edu.java.bot.command.CommandUtils;
-import edu.java.bot.exception.UnregisteredUserException;
-import edu.java.bot.exception.parameter.ParameterException;
-import edu.java.bot.service.ScrapperService;
-import java.util.List;
-import java.util.stream.Collectors;
+import edu.java.bot.client.service.ScrapperService;
+import edu.java.bot.telegram.command.AbstractServiceCommand;
+import edu.java.bot.telegram.command.CommandUtils;
+import edu.java.bot.telegram.exception.UnregisteredUserException;
+import edu.java.bot.telegram.exception.parameter.ParameterException;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @Order(5)

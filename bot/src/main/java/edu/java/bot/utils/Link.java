@@ -1,6 +1,6 @@
 package edu.java.bot.utils;
 
-import edu.java.bot.exception.link.NotLinkException;
+import edu.java.bot.telegram.exception.link.NotLinkException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;

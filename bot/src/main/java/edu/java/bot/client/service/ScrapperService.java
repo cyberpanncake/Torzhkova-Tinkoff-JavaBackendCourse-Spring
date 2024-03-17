@@ -1,4 +1,4 @@
-package edu.java.bot.service;
+package edu.java.bot.client.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

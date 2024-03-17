@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.java.scrapper.client.AbstractClient;
-import edu.java.scrapper.dto.GithubResponse;
+import edu.java.scrapper.client.sources.dto.GithubResponse;
 import java.util.Optional;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;

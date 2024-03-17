@@ -1,8 +1,8 @@
-package edu.java.bot.command;
+package edu.java.bot.telegram.command;
 
-import edu.java.bot.exception.UnregisteredUserException;
-import edu.java.bot.exception.parameter.WrongNumberParametersException;
-import edu.java.bot.service.ScrapperService;
+import edu.java.bot.client.service.ScrapperService;
+import edu.java.bot.telegram.exception.UnregisteredUserException;
+import edu.java.bot.telegram.exception.parameter.WrongNumberParametersException;
 
 public class CommandUtils {
 
