@@ -5,11 +5,10 @@ import edu.java.bot.telegram.command.AbstractServiceCommand;
 import edu.java.bot.telegram.command.CommandUtils;
 import edu.java.bot.telegram.exception.UnregisteredUserException;
 import edu.java.bot.telegram.exception.parameter.ParameterException;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 @Component
 @Order(5)
