@@ -14,9 +14,12 @@ spring:
   application:
     name: scrapper
   liquibase:
-    enabled: true
-  autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+    enabled: false
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: "jdbc:postgresql://localhost:5432/scrapper"
+    username: "postgres"
+    password: "postgres"
 
   jackson:
     property-naming-strategy: SNAKE_CASE
