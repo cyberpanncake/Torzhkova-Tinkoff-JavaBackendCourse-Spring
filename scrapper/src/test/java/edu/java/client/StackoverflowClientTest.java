@@ -3,7 +3,7 @@ package edu.java.client;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
-import edu.java.configuration.ObjectMapperConfig;
+import edu.java.configuration.MapperConfig;
 import edu.java.dto.StackoverflowResponse;
 import java.util.Map;
 import java.util.Optional;
@@ -25,7 +25,7 @@ class StackoverflowClientTest {
     private final ObjectMapper mapper;
 
     StackoverflowClientTest() {
-        this.mapper = new ObjectMapperConfig().objectMapper();
+        this.mapper = new MapperConfig().objectMapper();
     }
 
     @BeforeEach
