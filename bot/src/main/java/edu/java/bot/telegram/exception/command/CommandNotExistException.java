@@ -1,4 +1,4 @@
-package edu.java.bot.exception.command;
+package edu.java.bot.telegram.exception.command;
 
 public class CommandNotExistException extends CommandException {
     public CommandNotExistException() {

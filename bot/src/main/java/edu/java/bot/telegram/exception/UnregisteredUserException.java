@@ -1,4 +1,4 @@
-package edu.java.bot.exception;
+package edu.java.bot.telegram.exception;
 
 public class UnregisteredUserException extends Exception {
 

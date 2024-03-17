@@ -1,4 +1,4 @@
-package edu.java.bot.exception.link;
+package edu.java.bot.telegram.exception.link;
 
 public abstract class LinkException extends Exception {
 

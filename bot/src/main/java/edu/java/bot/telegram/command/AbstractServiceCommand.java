@@ -1,6 +1,6 @@
-package edu.java.bot.command;
+package edu.java.bot.telegram.command;
 
-import edu.java.bot.service.ScrapperService;
+import edu.java.bot.client.service.ScrapperService;
 
 public abstract class AbstractServiceCommand extends AbstractCommand {
     protected ScrapperService service;

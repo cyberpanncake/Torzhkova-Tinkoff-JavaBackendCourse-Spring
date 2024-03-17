@@ -1,4 +1,4 @@
-package edu.java.bot.exception.command;
+package edu.java.bot.telegram.exception.command;
 
 public abstract class CommandException extends Exception {
 
