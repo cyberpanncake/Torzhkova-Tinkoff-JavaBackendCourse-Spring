@@ -3,7 +3,7 @@ package edu.java.client;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
-import edu.java.configuration.ObjectMapperConfig;
+import edu.java.configuration.MapperConfig;
 import edu.java.dto.GithubResponse;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +26,7 @@ class GithubClientTest {
     private final ObjectMapper mapper;
 
     GithubClientTest() {
-        this.mapper = new ObjectMapperConfig().objectMapper();
+        this.mapper = new MapperConfig().objectMapper();
     }
 
     @BeforeEach
