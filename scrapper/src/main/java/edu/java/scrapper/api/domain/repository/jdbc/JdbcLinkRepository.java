@@ -3,6 +3,7 @@ package edu.java.scrapper.api.domain.repository.jdbc;
 import edu.java.scrapper.api.domain.dto.Link;
 import edu.java.scrapper.api.domain.repository.LinkRepository;
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -65,5 +66,22 @@ public class JdbcLinkRepository extends AbstractJdbcRepository implements LinkRe
         return client.sql("select * from link")
             .query(Link.class)
             .list();
+    }
+
+    @Override
+    public List<Link> findAllWithLastCheckOlderThan(OffsetDateTime time) {
+        return client.sql("select * from link where link.last_check < ?")
+            .param(time)
+            .query(Link.class)
+            .list();
+    }
+
+    @Override
+    public void update(Link link) {
+        client.sql("update link set last_update = ?, last_check = ? where id = ?")
+            .param(link.lastUpdate())
+            .param(link.lastCheck())
+            .param(link.id())
+            .update();
     }
 }

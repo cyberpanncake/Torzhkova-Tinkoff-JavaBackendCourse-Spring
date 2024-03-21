@@ -4,10 +4,11 @@ import edu.java.bot.client.service.ScrapperService;
 import edu.java.bot.telegram.command.AbstractServiceCommand;
 import edu.java.bot.telegram.command.CommandUtils;
 import edu.java.bot.telegram.exception.UnregisteredUserException;
-import edu.java.bot.telegram.exception.link.LinkRegistrationException;
-import edu.java.bot.telegram.exception.link.NotLinkException;
 import edu.java.bot.telegram.exception.parameter.ParameterException;
-import edu.java.bot.utils.Link;
+import edu.java.dto.utils.LinkParser;
+import edu.java.dto.utils.exception.LinkRegistrationException;
+import edu.java.dto.utils.exception.NotLinkException;
+import edu.java.dto.utils.exception.SourceNotSupportedException;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -31,10 +32,11 @@ public class UntrackCommand extends AbstractServiceCommand {
 
     @Override
     protected String doAction(Long userId, String[] params)
-        throws ParameterException, NotLinkException, UnregisteredUserException, LinkRegistrationException {
+        throws ParameterException, NotLinkException, UnregisteredUserException, LinkRegistrationException,
+        SourceNotSupportedException {
         CommandUtils.checkParamsNumber(params, 1);
         String link = params[0];
-        Link.parse(link);
+        new LinkParser(null).parse(link);
         CommandUtils.checkUserRegistration(userId, service);
         if (!service.isLinkRegistered(userId, link)) {
             throw new LinkRegistrationException("Ссылка не была зарегистрирована");

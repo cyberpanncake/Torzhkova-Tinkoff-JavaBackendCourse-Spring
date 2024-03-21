@@ -1,14 +1,11 @@
-package edu.java.api_dto.bot;
+package edu.java.dto.api.scrapper;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.net.URI;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record LinkUpdateRequest(
+public record LinkResponse(
     Long id,
-    URI url,
-    String description,
-    Long[] tgChatIds
+    URI url
 ) {
 }
-
