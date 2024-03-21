@@ -22,7 +22,7 @@ public class JdbcSubscriptionRepository extends AbstractJdbcRepository implement
     @Override
     public Optional<Subscription> find(long tgId, URI url) {
         return client.sql("""
-                select subscription.chat_id, subscription.link_id
+                select subscription.*
                 from subscription
                     inner join chat on subscription.chat_id = chat.id
                     inner join link on subscription.link_id = link.id
@@ -79,7 +79,7 @@ public class JdbcSubscriptionRepository extends AbstractJdbcRepository implement
     @Override
     public List<Link> findAllLinksByChat(Chat chat) {
         return client.sql("""
-                select link.id, link.url
+                select link.*
                 from link
                     inner join subscription on link.id = subscription.link_id
                 where
