@@ -17,7 +17,7 @@ spring:
     enabled: false
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: "jdbc:postgresql://localhost:5432/scrapper"
+    url: "jdbc:postgresql://localhost:5433/scrapper"
     username: "postgres"
     password: "postgres"
 
