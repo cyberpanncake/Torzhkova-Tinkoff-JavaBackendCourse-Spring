@@ -1,6 +1,6 @@
 package edu.java.scrapper.api.controller;
 
-import edu.java.api_dto.scrapper.ApiErrorResponse;
+import edu.java.dto.api.scrapper.ApiErrorResponse;
 import edu.java.scrapper.api.exception.chat.ChatAlreadyRegisteredException;
 import edu.java.scrapper.api.exception.chat.ChatNotFoundException;
 import edu.java.scrapper.api.service.ChatService;

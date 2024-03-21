@@ -1,10 +1,10 @@
 package edu.java.scrapper.api.controller;
 
-import edu.java.api_dto.scrapper.AddLinkRequest;
-import edu.java.api_dto.scrapper.ApiErrorResponse;
-import edu.java.api_dto.scrapper.LinkResponse;
-import edu.java.api_dto.scrapper.ListLinksResponse;
-import edu.java.api_dto.scrapper.RemoveLinkRequest;
+import edu.java.dto.api.scrapper.AddLinkRequest;
+import edu.java.dto.api.scrapper.ApiErrorResponse;
+import edu.java.dto.api.scrapper.LinkResponse;
+import edu.java.dto.api.scrapper.ListLinksResponse;
+import edu.java.dto.api.scrapper.RemoveLinkRequest;
 import edu.java.scrapper.api.domain.dto.Link;
 import edu.java.scrapper.api.exception.chat.ChatNotFoundException;
 import edu.java.scrapper.api.exception.link.LinkAdditionException;

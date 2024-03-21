@@ -130,7 +130,7 @@
         </dependency>
         <dependency>
             <groupId>edu.java</groupId>
-            <artifactId>api_dto</artifactId>
+            <artifactId>dto</artifactId>
             <version>0.1</version>
         </dependency>
     </dependencies>
