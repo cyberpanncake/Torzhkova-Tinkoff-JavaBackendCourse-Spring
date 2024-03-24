@@ -16,9 +16,13 @@ public interface SubscriptionRepository {
 
     List<Subscription> findAll();
 
-    List<Subscription> findAllByChat(long chatId);
+    List<Subscription> findAllByChat(Chat chat);
+
+    List<Subscription> findAllByLink(Link link);
 
     boolean linkNotFollowedByAnyone(long linkId);
 
     List<Link> findAllLinksByChat(Chat chat);
+
+    List<Chat> findAllChatsByLink(Link link);
 }
