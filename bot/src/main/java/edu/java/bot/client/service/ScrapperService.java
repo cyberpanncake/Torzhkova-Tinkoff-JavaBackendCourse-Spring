@@ -15,7 +15,7 @@ public class ScrapperService {
     public boolean isUserRegistered(Long userId) {
         // TODO: добавить работу с БД через scrapper
         log.info("%s. Проверка регистрации пользователя %d".formatted(LocalDateTime.now(), userId));
-        return false;
+        return true;
     }
 
     public void registerUser(Long userId) {

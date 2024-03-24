@@ -1,5 +1,6 @@
 package edu.java.dto.utils.sources.parsers;
 
+import edu.java.dto.utils.exception.SourceException;
 import edu.java.dto.utils.exception.SourceNotSupportedException;
 import edu.java.dto.utils.sources.info.SourceInfo;
 import java.net.URI;
@@ -12,18 +13,18 @@ public abstract class SourceParser {
         this.next = next;
     }
 
-    public SourceInfo parse(URI url) throws SourceNotSupportedException {
+    public SourceInfo parse(URI uri) throws SourceException {
         try {
-            return parseSource(url);
+            return parseSource(uri);
         } catch (SourceNotSupportedException e) {
             if (next != null) {
-                return parse(url);
+                return next.parse(uri);
             }
             throw e;
         }
     }
 
-    abstract SourceInfo parseSource(URI url) throws SourceNotSupportedException;
+    abstract SourceInfo parseSource(URI uri) throws SourceException;
 
     public static SourceParser buildChain(Set<SourceParser> parsers) {
         SourceParser first = null;
