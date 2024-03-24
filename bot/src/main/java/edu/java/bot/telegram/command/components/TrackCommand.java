@@ -37,7 +37,7 @@ public class TrackCommand extends AbstractClientCommand {
         try {
             client.addLink(tgId, new AddLinkRequest(link));
         } catch (ScrapperApiException e) {
-            if ("ChatNotFoundException".equals(e.getError().exceptionName())) {
+            if (e.getError().exceptionName().contains("ChatNotFoundException")) {
                 return "Вы не зарегистрировались, для регистрации введите команду /start";
             }
             return "Не удалось добавить ссылку в отслеживаемые. Попробуйте повторить запрос позже";

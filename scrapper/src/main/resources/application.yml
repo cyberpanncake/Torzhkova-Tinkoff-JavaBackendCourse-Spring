@@ -8,7 +8,7 @@ resources:
   base-url:
     github: https://api.github.com/
     stackoverflow: https://api.stackexchange.com/2.3/
-    bot: https://localhost:8090
+    bot: http://localhost:8090
 
 spring:
   application:

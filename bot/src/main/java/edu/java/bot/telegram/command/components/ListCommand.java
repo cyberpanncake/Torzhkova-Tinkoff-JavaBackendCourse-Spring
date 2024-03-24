@@ -44,7 +44,7 @@ public class ListCommand extends AbstractClientCommand {
                 .mapToObj(i -> "%d. %s".formatted(i + 1, links[i].url()))
                 .collect(Collectors.joining("\n"));
         } catch (ScrapperApiException e) {
-            if ("ChatNotFoundException".equals(e.getError().exceptionName())) {
+            if (e.getError().exceptionName().contains("ChatNotFoundException")) {
                 return "Вы не зарегистрировались, для регистрации введите команду /start";
             }
             return "Не удалось получить список отслеживаемых ссылок. Попробуйте повторить запрос позже";

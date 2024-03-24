@@ -33,7 +33,7 @@ public class StartCommand extends AbstractClientCommand {
         try {
             client.registerChat(tgId);
         } catch (ScrapperApiException e) {
-            if ("ChatAlreadyRegisteredException".equals(e.getError().exceptionName())) {
+            if (e.getError().exceptionName().contains("ChatAlreadyRegisteredException")) {
                 return "Вы уже зарегистрировались";
             }
             return "Не удалось зарегистрироваться. Попробуйте повторить запрос позже";
