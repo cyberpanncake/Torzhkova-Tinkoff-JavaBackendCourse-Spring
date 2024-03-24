@@ -60,13 +60,23 @@ public class JdbcSubscriptionRepository extends AbstractJdbcRepository implement
     }
 
     @Override
-    public List<Subscription> findAllByChat(long chatId) {
+    public List<Subscription> findAllByChat(Chat chat) {
         return client.sql("select * from subscription where chat_id = ?")
-            .param(chatId)
+            .param(chat.id())
             .query(Subscription.class)
             .list();
     }
 
+    @SuppressWarnings("MultipleStringLiterals")
+    @Override
+    public List<Subscription> findAllByLink(Link link) {
+        return client.sql("select * from subscription where link_id = ?")
+            .param(link.id())
+            .query(Subscription.class)
+            .list();
+    }
+
+    @SuppressWarnings("MultipleStringLiterals")
     @Override
     public boolean linkNotFollowedByAnyone(long linkId) {
         List<Subscription> subscriptions = client.sql("select * from subscription where link_id = ?")
@@ -86,6 +96,19 @@ public class JdbcSubscriptionRepository extends AbstractJdbcRepository implement
                     subscription.chat_id = ?""")
             .param(chat.id())
             .query(Link.class)
+            .list();
+    }
+
+    @Override
+    public List<Chat> findAllChatsByLink(Link link) {
+        return client.sql("""
+            select chat.*
+            from chat
+                inner join subscription on chat.id = subscription.chat_id
+            where
+                subscription.link_id = ?""")
+            .param(link.id())
+            .query(Chat.class)
             .list();
     }
 }

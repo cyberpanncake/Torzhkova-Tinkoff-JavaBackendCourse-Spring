@@ -42,7 +42,7 @@ public class JdbcChatService extends ScrapperService implements ChatService {
         if (chat.isEmpty()) {
             throw new ChatNotFoundException();
         }
-        List<Subscription> subscriptions = subscriptionRepo.findAllByChat(chat.get().id());
+        List<Subscription> subscriptions = subscriptionRepo.findAllByChat(chat.get());
         for (Subscription subscription : subscriptions) {
             subscriptionRepo.remove(subscription);
             if (subscriptionRepo.linkNotFollowedByAnyone(subscription.linkId())) {

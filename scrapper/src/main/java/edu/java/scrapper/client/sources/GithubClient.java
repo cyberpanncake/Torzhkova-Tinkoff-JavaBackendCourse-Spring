@@ -15,12 +15,12 @@ public class GithubClient extends AbstractClient {
         super(baseUrl, mapper);
     }
 
-    public Optional<GithubResponse> getUpdate(String author, String repository) throws ResponseException {
+    public Optional<GithubResponse> getUpdate(String owner, String repo) throws ResponseException {
         Mono<JsonNode> jsonNodeMono = client.get()
             .uri(uriBuilder -> uriBuilder
-                .path("/repos/{author}/{repo}/events")
+                .path("/repos/{owner}/{repo}/events")
                 .queryParam("per_page", 1)
-                .build(author, repository))
+                .build(owner, repo))
             .retrieve()
             .bodyToMono(JsonNode.class);
         try {
