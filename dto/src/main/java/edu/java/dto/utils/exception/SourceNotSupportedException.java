@@ -1,6 +1,6 @@
 package edu.java.dto.utils.exception;
 
-public class SourceNotSupportedException extends LinkException {
+public class SourceNotSupportedException extends SourceException {
     public SourceNotSupportedException() {
     }
 

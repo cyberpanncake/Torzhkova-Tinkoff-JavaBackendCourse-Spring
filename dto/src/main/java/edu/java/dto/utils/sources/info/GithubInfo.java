@@ -1,19 +1,19 @@
 package edu.java.dto.utils.sources.info;
 
 public class GithubInfo extends SourceInfo {
-    private final String author;
-    private final String repository;
+    private final String owner;
+    private final String repo;
 
-    public GithubInfo(String author, String repository) {
-        this.author = author;
-        this.repository = repository;
+    public GithubInfo(String owner, String repo) {
+        this.owner = owner;
+        this.repo = repo;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getOwner() {
+        return owner;
     }
 
-    public String getRepository() {
-        return repository;
+    public String getRepo() {
+        return repo;
     }
 }
