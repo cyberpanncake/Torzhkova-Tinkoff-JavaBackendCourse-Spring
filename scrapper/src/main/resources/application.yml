@@ -2,7 +2,7 @@ app:
   scheduler:
     enable: true
     interval: 10000
-    force-check-delay: 10000
+    force-check-delay: 300000
 
 resources:
   base-url:
@@ -14,9 +14,12 @@ spring:
   application:
     name: scrapper
   liquibase:
-    enabled: true
-  autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+    enabled: false
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: "jdbc:postgresql://localhost:5433/scrapper"
+    username: "postgres"
+    password: "postgres"
 
   jackson:
     property-naming-strategy: SNAKE_CASE
