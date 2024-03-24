@@ -16,6 +16,6 @@ public class CommandConfig {
         return new LinkParser(SourceParser.buildChain(Set.of(
             new GithubParser(),
             new StackoverflowParser()
-        )));
+        )), true);
     }
 }
