@@ -4,7 +4,7 @@ import edu.java.dto.api.bot.ApiErrorResponse;
 import lombok.Getter;
 
 @Getter
-public class BotApiException extends Exception {
+public class BotApiException extends RuntimeException {
     private final ApiErrorResponse error;
 
     public BotApiException(ApiErrorResponse error) {

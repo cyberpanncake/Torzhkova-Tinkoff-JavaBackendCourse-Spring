@@ -23,7 +23,7 @@ public class ScrapperClient extends AbstractClient {
         super(baseUrl, mapper);
     }
 
-    public void registerChat(long id) {
+    public void registerChat(long id) throws ScrapperApiException {
         client.post()
             .uri(uriBuilder -> uriBuilder
                 .path(CHAT_BASE_URL + ID_PATH)
@@ -34,7 +34,7 @@ public class ScrapperClient extends AbstractClient {
             .block();
     }
 
-    public void deleteChat(long id) {
+    public void deleteChat(long id) throws ScrapperApiException {
         client.delete()
             .uri(uriBuilder -> uriBuilder
                 .path(CHAT_BASE_URL + ID_PATH)
@@ -45,7 +45,7 @@ public class ScrapperClient extends AbstractClient {
             .block();
     }
 
-    public ListLinksResponse getLinks(long id) {
+    public ListLinksResponse getLinks(long id) throws ScrapperApiException {
         return client.get()
             .uri(LINK_BASE_URL)
             .header(CHAT_HEADER, String.valueOf(id))
@@ -55,7 +55,7 @@ public class ScrapperClient extends AbstractClient {
             .block();
     }
 
-    public LinkResponse addLink(long id, AddLinkRequest request) {
+    public LinkResponse addLink(long id, AddLinkRequest request) throws ScrapperApiException {
         return client.post()
             .uri(LINK_BASE_URL)
             .header(CHAT_HEADER, String.valueOf(id))
@@ -67,7 +67,7 @@ public class ScrapperClient extends AbstractClient {
             .block();
     }
 
-    public LinkResponse deleteLink(long id, RemoveLinkRequest request) {
+    public LinkResponse deleteLink(long id, RemoveLinkRequest request) throws ScrapperApiException {
         return client.method(HttpMethod.DELETE)
             .uri(LINK_BASE_URL)
             .header(CHAT_HEADER, String.valueOf(id))

@@ -1,7 +1,6 @@
 package edu.java.bot.telegram.command;
 
 import com.pengrad.telegrambot.model.Update;
-import edu.java.bot.telegram.exception.UnregisteredUserException;
 import edu.java.bot.telegram.exception.command.CommandException;
 import edu.java.bot.telegram.exception.command.CommandNotExistException;
 import edu.java.bot.telegram.exception.command.NotCommandException;
@@ -15,7 +14,7 @@ public abstract class AbstractCommand implements Command {
 
     @Override
     public String execute(Update update)
-        throws UnregisteredUserException, ParameterException, CommandException, LinkException {
+        throws ParameterException, CommandException, LinkException {
         Long userId = update.message().from().id();
         List<String> message = new ArrayList<>(Arrays.asList(update.message().text().trim().split(" ")));
         message.removeFirst();
@@ -23,8 +22,8 @@ public abstract class AbstractCommand implements Command {
         return doAction(userId, params);
     }
 
-    protected abstract String doAction(Long userId, String[] params)
-        throws UnregisteredUserException, ParameterException, CommandException, LinkException;
+    protected abstract String doAction(Long tgId, String[] params)
+        throws ParameterException, CommandException, LinkException;
 
     public static Command parse(Update update, List<Command> commands) throws CommandException {
         String command = update.message().text().trim().split(" ")[0];
