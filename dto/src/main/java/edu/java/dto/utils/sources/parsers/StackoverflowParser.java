@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 public class StackoverflowParser extends SourceParser {
     private static final String BASE_PATTERN = "^https?://stackoverflow.com/questions";
-    private static final String LINK_PATTERN = BASE_PATTERN + "/(.+?)(/.)?$";
+    private static final String LINK_PATTERN = BASE_PATTERN + "/([0-9]+?)(/.*)?$";
 
     @Override
     StackoverflowInfo parseSource(URI uri) throws SourceException {
