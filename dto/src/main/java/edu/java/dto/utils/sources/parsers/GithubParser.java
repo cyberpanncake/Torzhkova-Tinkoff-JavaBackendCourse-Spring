@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 public class GithubParser extends SourceParser {
     private static final String BASE_PATTERN = "^https?://github.com";
-    private static final String LINK_PATTERN = BASE_PATTERN + "/(.+?)/(.+?)(/.)?$";
+    private static final String LINK_PATTERN = BASE_PATTERN + "/(.+?)/(.+?)(/.*)?$";
 
     @Override
     GithubInfo parseSource(URI uri) throws SourceException {
