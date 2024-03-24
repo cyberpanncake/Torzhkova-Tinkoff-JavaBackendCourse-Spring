@@ -29,7 +29,7 @@ public class HelpCommand extends AbstractCommand {
     }
 
     @Override
-    protected String doAction(Long userId, String[] params) throws ParameterException {
+    protected String doAction(Long tgId, String[] params) throws ParameterException {
         CommandUtils.checkParamsNumber(params, 0);
         return commands.stream()
             .map(c -> "/%s — %s".formatted(c.getName(), c.getDescription()))

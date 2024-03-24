@@ -1,22 +1,24 @@
 package edu.java.bot.telegram.command.components;
 
-import edu.java.bot.client.service.ScrapperService;
+import edu.java.bot.client.ScrapperApiException;
+import edu.java.bot.client.ScrapperClient;
 import edu.java.bot.configuration.CommandConfig;
-import edu.java.bot.telegram.command.AbstractServiceCommand;
+import edu.java.bot.telegram.command.AbstractClientCommand;
 import edu.java.bot.telegram.command.CommandUtils;
-import edu.java.bot.telegram.exception.UnregisteredUserException;
 import edu.java.bot.telegram.exception.parameter.ParameterException;
-import java.util.List;
+import edu.java.dto.api.scrapper.LinkResponse;
+import edu.java.dto.api.scrapper.ListLinksResponse;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
 @Order(5)
-public class ListCommand extends AbstractServiceCommand {
+public class ListCommand extends AbstractClientCommand {
 
-    public ListCommand(ScrapperService service, CommandConfig config) {
-        super(service, config);
+    public ListCommand(ScrapperClient client, CommandConfig config) {
+        super(client, config);
     }
 
     @Override
@@ -30,18 +32,22 @@ public class ListCommand extends AbstractServiceCommand {
     }
 
     @Override
-    protected String doAction(Long userId, String[] params) throws ParameterException, UnregisteredUserException {
+    protected String doAction(Long tgId, String[] params) throws ParameterException {
         CommandUtils.checkParamsNumber(params, 0);
-        CommandUtils.checkUserRegistration(userId, service);
-        List<String> links = service.getLinks(userId);
-        String result;
-        if (links.isEmpty()) {
-            result = "У вас нет отслеживаемых ссылок";
-        } else {
-            result = links.stream()
-                .map(l -> "%d. %s".formatted(links.indexOf(l) + 1, l))
+        try {
+            ListLinksResponse response = client.getLinks(tgId);
+            LinkResponse[] links = response.links();
+            if (links.length == 0) {
+                return "У вас нет отслеживаемых ссылок";
+            }
+            return IntStream.range(0, links.length)
+                .mapToObj(i -> "%d. %s".formatted(i + 1, links[i].url()))
                 .collect(Collectors.joining("\n"));
+        } catch (ScrapperApiException e) {
+            if ("ChatNotFoundException".equals(e.getError().exceptionName())) {
+                return "Вы не зарегистрировались, для регистрации введите команду /start";
+            }
+            return "Не удалось получить список отслеживаемых ссылок. Попробуйте повторить запрос позже";
         }
-        return result;
     }
 }
