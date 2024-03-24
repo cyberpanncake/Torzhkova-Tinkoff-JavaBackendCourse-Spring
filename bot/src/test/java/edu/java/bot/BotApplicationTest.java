@@ -11,12 +11,14 @@ import edu.java.bot.telegram.exception.UnregisteredUserException;
 import edu.java.bot.telegram.exception.command.CommandException;
 import edu.java.bot.telegram.exception.command.CommandNotExistException;
 import edu.java.bot.telegram.exception.command.NotCommandException;
+import edu.java.dto.utils.exception.BadSourceUrlException;
 import edu.java.dto.utils.exception.LinkException;
 import edu.java.dto.utils.exception.LinkRegistrationException;
 import edu.java.dto.utils.exception.NotLinkException;
 import edu.java.bot.telegram.exception.parameter.ParameterException;
 import edu.java.bot.telegram.exception.parameter.WrongNumberParametersException;
 import java.util.List;
+import edu.java.dto.utils.exception.SourceNotSupportedException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -122,10 +124,10 @@ class BotApplicationTest {
     void trackTest() throws UnregisteredUserException, ParameterException, CommandException, LinkException {
         service.setUserRegistered(true);
         service.setLinks(List.of());
-        setMessage("/track https://github.com/cyberpanncake");
+        setMessage("/track https://github.com/cyberpanncake/Torzhkova-Tinkoff-JavaBackendCourse-Spring");
         Command command = AbstractCommand.parse(updateMock, config.commands());
         String expected = "Ссылка добавлена в отслеживаемые";
-        String actual = command.execute(updateMock);
+         String actual = command.execute(updateMock);
         Assertions.assertEquals(expected, actual);
     }
 
@@ -139,17 +141,35 @@ class BotApplicationTest {
     }
 
     @Test
+    void sourceNotSupportedExceptionTest() throws CommandException {
+        service.setUserRegistered(true);
+        service.setLinks(List.of());
+        setMessage("/track https://google.com");
+        Command command = AbstractCommand.parse(updateMock, config.commands());
+        Assertions.assertThrows(SourceNotSupportedException.class, () -> command.execute(updateMock));
+    }
+
+    @Test
+    void badSourceUrlExceptionTest() throws CommandException {
+        service.setUserRegistered(true);
+        service.setLinks(List.of());
+        setMessage("/track https://github.com/cyberpanncake");
+        Command command = AbstractCommand.parse(updateMock, config.commands());
+        Assertions.assertThrows(BadSourceUrlException.class, () -> command.execute(updateMock));
+    }
+
+    @Test
     void unregisteredUserExceptionTest() throws CommandException {
         service.setUserRegistered(false);
         service.setLinks(List.of());
-        setMessage("/track https://github.com/cyberpanncake");
+        setMessage("/track https://github.com/cyberpanncake/Torzhkova-Tinkoff-JavaBackendCourse-Spring");
         Command command = AbstractCommand.parse(updateMock, config.commands());
         Assertions.assertThrows(UnregisteredUserException.class, () -> command.execute(updateMock));
     }
 
     @Test
     void linkRegisteredExceptionTest() throws CommandException {
-        String link = "https://github.com/cyberpanncake";
+        String link = "https://github.com/cyberpanncake/Torzhkova-Tinkoff-JavaBackendCourse-Spring";
         service.setUserRegistered(true);
         service.setLinks(List.of(link));
         setMessage("/track " + link);
@@ -159,7 +179,7 @@ class BotApplicationTest {
 
     @Test
     void untrackTest() throws UnregisteredUserException, ParameterException, CommandException, LinkException {
-        String link = "https://github.com/cyberpanncake";
+        String link = "https://github.com/cyberpanncake/Torzhkova-Tinkoff-JavaBackendCourse-Spring";
         service.setUserRegistered(true);
         service.setLinks(List.of(link));
         setMessage("/untrack " + link);
@@ -173,7 +193,7 @@ class BotApplicationTest {
     void linkNotRegisteredExceptionTest() throws CommandException {
         service.setUserRegistered(true);
         service.setLinks(List.of());
-        setMessage("/untrack https://github.com/cyberpanncake");
+        setMessage("/untrack https://github.com/cyberpanncake/Torzhkova-Tinkoff-JavaBackendCourse-Spring");
         Command command = AbstractCommand.parse(updateMock, config.commands());
         Assertions.assertThrows(LinkRegistrationException.class, () -> command.execute(updateMock));
     }
