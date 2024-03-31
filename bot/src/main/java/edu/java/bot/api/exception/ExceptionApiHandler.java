@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice public class ExceptionApiHandler {
 
-    @ExceptionHandler(ChatNotExistException.class)
-    public ResponseEntity<ApiErrorResponse> chatNotExistException(ChatNotExistException exception) {
+    @ExceptionHandler(ChatNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> chatNotExistException(ChatNotFoundException exception) {
         ApiErrorResponse error = new ApiErrorResponse(
             "Чат с id %d не существует".formatted(exception.getChatId()),
             HttpStatus.NOT_FOUND.toString(),

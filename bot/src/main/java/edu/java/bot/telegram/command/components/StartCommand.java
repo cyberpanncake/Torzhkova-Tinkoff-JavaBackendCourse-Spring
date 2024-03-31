@@ -5,7 +5,10 @@ import edu.java.bot.client.ScrapperClient;
 import edu.java.bot.configuration.CommandConfig;
 import edu.java.bot.telegram.command.AbstractClientCommand;
 import edu.java.bot.telegram.command.CommandUtils;
-import edu.java.bot.telegram.exception.parameter.ParameterException;
+import edu.java.bot.telegram.command.exception.CommandExecutionException;
+import edu.java.bot.telegram.command.exception.chat.ChatAlreadyRegisteredException;
+import edu.java.bot.telegram.command.exception.chat.ChatException;
+import edu.java.bot.telegram.command.exception.parameter.ParameterException;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -28,15 +31,16 @@ public class StartCommand extends AbstractClientCommand {
     }
 
     @Override
-    protected String doAction(Long tgId, String[] params) throws ParameterException {
+    protected String doAction(Long tgId, String[] params)
+        throws ParameterException, ChatException, CommandExecutionException {
         CommandUtils.checkParamsNumber(params, 0);
         try {
             client.registerChat(tgId);
         } catch (ScrapperApiException e) {
             if (e.getError().exceptionName().contains("ChatAlreadyRegisteredException")) {
-                return "Вы уже зарегистрировались";
+                throw new ChatAlreadyRegisteredException("Вы уже зарегистрировались");
             }
-            return "Не удалось зарегистрироваться. Попробуйте повторить запрос позже";
+            throw new CommandExecutionException("Не удалось зарегистрироваться. Попробуйте повторить запрос позже");
         }
         return "Вы успешно зарегистрировались";
     }

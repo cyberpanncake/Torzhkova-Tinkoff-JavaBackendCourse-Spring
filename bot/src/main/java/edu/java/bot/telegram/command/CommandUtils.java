@@ -1,6 +1,6 @@
 package edu.java.bot.telegram.command;
 
-import edu.java.bot.telegram.exception.parameter.WrongNumberParametersException;
+import edu.java.bot.telegram.command.exception.parameter.WrongNumberParametersException;
 
 public class CommandUtils {
 

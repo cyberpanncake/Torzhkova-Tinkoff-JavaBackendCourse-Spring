@@ -5,9 +5,14 @@ import edu.java.bot.client.ScrapperClient;
 import edu.java.bot.configuration.CommandConfig;
 import edu.java.bot.telegram.command.AbstractClientCommand;
 import edu.java.bot.telegram.command.CommandUtils;
-import edu.java.bot.telegram.exception.parameter.ParameterException;
+import edu.java.bot.telegram.command.exception.CommandExecutionException;
+import edu.java.bot.telegram.command.exception.chat.ChatException;
+import edu.java.bot.telegram.command.exception.chat.ChatNotFoundException;
+import edu.java.bot.telegram.command.exception.link.LinkException;
+import edu.java.bot.telegram.command.exception.link.LinkNotFoundException;
+import edu.java.bot.telegram.command.exception.parameter.ParameterException;
 import edu.java.dto.api.scrapper.RemoveLinkRequest;
-import edu.java.dto.utils.exception.LinkException;
+import edu.java.dto.utils.exception.UrlException;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +35,8 @@ public class UntrackCommand extends AbstractClientCommand {
     }
 
     @Override
-    protected String doAction(Long tgId, String[] params) throws ParameterException, LinkException {
+    protected String doAction(Long tgId, String[] params) throws ParameterException, UrlException, ChatException,
+        LinkException, CommandExecutionException {
         CommandUtils.checkParamsNumber(params, 1);
         String link = params[0];
         config.linkParser().parse(link);
@@ -38,12 +44,13 @@ public class UntrackCommand extends AbstractClientCommand {
             client.deleteLink(tgId, new RemoveLinkRequest(link));
         } catch (ScrapperApiException e) {
             if ("ChatNotFoundException".equals(e.getError().exceptionName())) {
-                return "Вы не зарегистрировались, для регистрации введите команду /start";
+                throw new ChatNotFoundException("Вы не зарегистрировались, для регистрации введите команду /start");
             }
             if ("LinkNotFoundException".equals(e.getError().exceptionName())) {
-                return "Вы не отслеживаете эту ссылку";
+                throw new LinkNotFoundException("Вы не отслеживаете эту ссылку");
             }
-            return "Не удалось удалить ссылку из отслеживаемых. Попробуйте повторить запрос позже";
+            throw new CommandExecutionException(
+                "Не удалось удалить ссылку из отслеживаемых. Попробуйте повторить запрос позже");
         }
         return "Ссылка удалена из отслеживаемых";
     }

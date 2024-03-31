@@ -1,13 +1,13 @@
 package edu.java.bot.api.exception;
 
-public class ChatNotExistException extends Exception {
+public class ChatNotFoundException extends Exception {
     private final long chatId;
 
-    public ChatNotExistException(long chatId) {
+    public ChatNotFoundException(long chatId) {
         this.chatId = chatId;
     }
 
-    public ChatNotExistException(long chatId, String message) {
+    public ChatNotFoundException(long chatId, String message) {
         super(message);
         this.chatId = chatId;
     }

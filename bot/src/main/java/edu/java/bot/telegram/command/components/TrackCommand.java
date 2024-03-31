@@ -5,9 +5,14 @@ import edu.java.bot.client.ScrapperClient;
 import edu.java.bot.configuration.CommandConfig;
 import edu.java.bot.telegram.command.AbstractClientCommand;
 import edu.java.bot.telegram.command.CommandUtils;
-import edu.java.bot.telegram.exception.parameter.ParameterException;
+import edu.java.bot.telegram.command.exception.CommandExecutionException;
+import edu.java.bot.telegram.command.exception.chat.ChatException;
+import edu.java.bot.telegram.command.exception.chat.ChatNotFoundException;
+import edu.java.bot.telegram.command.exception.link.LinkAlreadyAddedException;
+import edu.java.bot.telegram.command.exception.link.LinkException;
+import edu.java.bot.telegram.command.exception.parameter.ParameterException;
 import edu.java.dto.api.scrapper.AddLinkRequest;
-import edu.java.dto.utils.exception.LinkException;
+import edu.java.dto.utils.exception.UrlException;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +35,8 @@ public class TrackCommand extends AbstractClientCommand {
     }
 
     @Override
-    protected String doAction(Long tgId, String[] params) throws ParameterException, LinkException {
+    protected String doAction(Long tgId, String[] params) throws ParameterException, UrlException, ChatException,
+        LinkException, CommandExecutionException {
         CommandUtils.checkParamsNumber(params, 1);
         String link = params[0];
         config.linkParser().parse(link);
@@ -38,9 +44,13 @@ public class TrackCommand extends AbstractClientCommand {
             client.addLink(tgId, new AddLinkRequest(link));
         } catch (ScrapperApiException e) {
             if (e.getError().exceptionName().contains("ChatNotFoundException")) {
-                return "Вы не зарегистрировались, для регистрации введите команду /start";
+                throw new ChatNotFoundException("Вы не зарегистрировались, для регистрации введите команду /start");
             }
-            return "Не удалось добавить ссылку в отслеживаемые. Попробуйте повторить запрос позже";
+            if (e.getError().exceptionName().contains("LinkAdditionException")) {
+                throw new LinkAlreadyAddedException("Ссылка уже была добавлена Вами ранее");
+            }
+            throw new CommandExecutionException(
+                "Не удалось добавить ссылку в отслеживаемые. Попробуйте повторить запрос позже");
         }
         return "Ссылка добавлена в отслеживаемые";
     }

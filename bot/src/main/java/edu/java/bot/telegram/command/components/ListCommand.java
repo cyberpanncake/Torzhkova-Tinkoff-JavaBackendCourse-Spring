@@ -5,7 +5,10 @@ import edu.java.bot.client.ScrapperClient;
 import edu.java.bot.configuration.CommandConfig;
 import edu.java.bot.telegram.command.AbstractClientCommand;
 import edu.java.bot.telegram.command.CommandUtils;
-import edu.java.bot.telegram.exception.parameter.ParameterException;
+import edu.java.bot.telegram.command.exception.CommandExecutionException;
+import edu.java.bot.telegram.command.exception.chat.ChatException;
+import edu.java.bot.telegram.command.exception.chat.ChatNotFoundException;
+import edu.java.bot.telegram.command.exception.parameter.ParameterException;
 import edu.java.dto.api.scrapper.LinkResponse;
 import edu.java.dto.api.scrapper.ListLinksResponse;
 import java.util.stream.Collectors;
@@ -32,7 +35,8 @@ public class ListCommand extends AbstractClientCommand {
     }
 
     @Override
-    protected String doAction(Long tgId, String[] params) throws ParameterException {
+    protected String doAction(Long tgId, String[] params)
+        throws ParameterException, ChatException, CommandExecutionException {
         CommandUtils.checkParamsNumber(params, 0);
         try {
             ListLinksResponse response = client.getLinks(tgId);
@@ -45,9 +49,10 @@ public class ListCommand extends AbstractClientCommand {
                 .collect(Collectors.joining("\n"));
         } catch (ScrapperApiException e) {
             if (e.getError().exceptionName().contains("ChatNotFoundException")) {
-                return "Вы не зарегистрировались, для регистрации введите команду /start";
+                throw new ChatNotFoundException("Вы не зарегистрировались, для регистрации введите команду /start");
             }
-            return "Не удалось получить список отслеживаемых ссылок. Попробуйте повторить запрос позже";
+            throw new CommandExecutionException(
+                "Не удалось получить список отслеживаемых ссылок. Попробуйте повторить запрос позже");
         }
     }
 }

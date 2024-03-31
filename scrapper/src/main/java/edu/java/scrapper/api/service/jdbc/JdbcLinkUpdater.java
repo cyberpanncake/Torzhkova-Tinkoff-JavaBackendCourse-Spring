@@ -2,7 +2,7 @@ package edu.java.scrapper.api.service.jdbc;
 
 import edu.java.dto.api.bot.LinkUpdateRequest;
 import edu.java.dto.utils.LinkInfo;
-import edu.java.dto.utils.exception.NotLinkException;
+import edu.java.dto.utils.exception.NotUrlException;
 import edu.java.dto.utils.exception.SourceException;
 import edu.java.scrapper.api.domain.dto.Chat;
 import edu.java.scrapper.api.domain.dto.Link;
@@ -60,14 +60,14 @@ public class JdbcLinkUpdater extends ScrapperService implements LinkUpdater {
                     linkRepo.update(new Link(link.id(), link.url(), update.get().getCreatedAt(), lastCheck));
                     processLinkUpdate(update.get(), link);
                 }
-            } catch (NotLinkException | SourceException | ResponseException e) {
+            } catch (NotUrlException | SourceException | ResponseException e) {
                 removeCorruptedLinkWithSubscriptions(link);
             }
         }
         return countUpdates;
     }
 
-    private void processLinkUpdate(Update update, Link link) throws SourceException, NotLinkException {
+    private void processLinkUpdate(Update update, Link link) throws SourceException, NotUrlException {
         List<Chat> subscribers = subscriptionRepo.findAllChatsByLink(link);
         if (subscribers.isEmpty()) {
             linkRepo.remove(link.url());
