@@ -23,6 +23,7 @@ import edu.java.scrapper.shedule.update.sources.SourceUpdater;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -55,7 +56,6 @@ public class JdbcLinkUpdater extends ScrapperService implements LinkUpdater {
         List<Link> linksNeedToCheck = linkRepo.findAllWithLastCheckOlderThan(lastCheck.minus(checkDelay));
         int countUpdates = 0;
         for (Link link : linksNeedToCheck) {
-            linkRepo.update(new Link(link.id(), link.url(), link.lastUpdate(), lastCheck));
             try {
                 LinkInfo linkInfo = parserConfig.linkParser().parse(link.url().toString());
                 Optional<Update> update = getUpdateFromSource(linkInfo);
@@ -63,7 +63,9 @@ public class JdbcLinkUpdater extends ScrapperService implements LinkUpdater {
                     countUpdates++;
                     linkRepo.update(new Link(link.id(), link.url(), update.get().getCreatedAt(), lastCheck));
                     processLinkUpdate(update.get(), link);
+                    continue;
                 }
+                linkRepo.update(new Link(link.id(), link.url(), link.lastUpdate(), lastCheck));
             } catch (NotUrlException | SourceException | ResponseException e) {
                 removeCorruptedLinkWithSubscriptions(link);
             }
@@ -81,8 +83,9 @@ public class JdbcLinkUpdater extends ScrapperService implements LinkUpdater {
             clientConfig.botClient().sendUpdate(new LinkUpdateRequest(
                 link.id(),
                 link.url(),
-                "Новое обновление по ссылке\n%s\nСоздано в %s"
-                    .formatted(link.url(), update.getCreatedAt()),
+                "Новое обновление по ссылке\n%s\n\nСоздано в %s по Гринвичу"
+                    .formatted(link.url(), update.getCreatedAt()
+                        .format(DateTimeFormatter.ofPattern("HH:mm (dd.MM.yyyy г.)"))),
                 subscribers.stream().map(Chat::tgId).toArray(Long[]::new)
             ));
         } catch (BotApiException e) {

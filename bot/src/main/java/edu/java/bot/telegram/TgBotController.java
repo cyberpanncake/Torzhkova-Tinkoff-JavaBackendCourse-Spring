@@ -10,6 +10,12 @@ import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.bot.configuration.TelegramBotConfig;
 import edu.java.bot.telegram.command.AbstractCommand;
 import edu.java.bot.telegram.command.Command;
+import edu.java.bot.telegram.command.exception.CommandExecutionException;
+import edu.java.bot.telegram.command.exception.chat.ChatException;
+import edu.java.bot.telegram.command.exception.command.CommandException;
+import edu.java.bot.telegram.command.exception.link.LinkException;
+import edu.java.bot.telegram.command.exception.parameter.ParameterException;
+import edu.java.dto.utils.exception.UrlException;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -35,19 +41,23 @@ public class TgBotController {
                 continue;
             }
             long chatId = update.message().chat().id();
-            String message;
+            String message = "";
             Command command;
             try {
                 command = AbstractCommand.parse(update, botConfig.commands());
                 message = command.execute(update);
-            } catch (Exception e) {
+            } catch (CommandException | ParameterException | UrlException | ChatException | CommandExecutionException
+                     | LinkException e) {
                 message = e.getMessage();
-                log.info("%s. Чат %d. Сообщение: \"%s\". Ошибка: \"%s\""
+            } catch (Exception e) {
+                log.error("%s. Чат %d. Сообщение: \"%s\". Ошибка: \"%s\""
                     .formatted(LocalDateTime.now(), chatId, update.message().text(), e.getMessage()));
             }
-            SendResponse response = bot.execute(new SendMessage(chatId, message));
-            if (!response.isOk()) {
-                log.error("%s. Чат %d".formatted(LocalDateTime.now(), chatId));
+            if (!message.isEmpty()) {
+                SendResponse response = bot.execute(new SendMessage(chatId, message));
+                if (!response.isOk()) {
+                    log.error("%s. Чат %d".formatted(LocalDateTime.now(), chatId));
+                }
             }
         }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
