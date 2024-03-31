@@ -1,5 +1,6 @@
 package edu.java.scrapper.api.service.jdbc;
 
+import edu.java.dto.api.bot.ApiErrorResponse;
 import edu.java.dto.api.bot.LinkUpdateRequest;
 import edu.java.dto.utils.LinkInfo;
 import edu.java.dto.utils.exception.NotUrlException;
@@ -12,6 +13,7 @@ import edu.java.scrapper.api.domain.repository.jdbc.JdbcLinkRepository;
 import edu.java.scrapper.api.domain.repository.jdbc.JdbcSubscriptionRepository;
 import edu.java.scrapper.api.service.LinkUpdater;
 import edu.java.scrapper.api.service.ScrapperService;
+import edu.java.scrapper.client.bot.BotApiException;
 import edu.java.scrapper.client.sources.ResponseException;
 import edu.java.scrapper.configuration.ApplicationConfig;
 import edu.java.scrapper.configuration.ClientConfig;
@@ -24,10 +26,12 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class JdbcLinkUpdater extends ScrapperService implements LinkUpdater {
     private final ClientConfig clientConfig;
     private final LinkParserConfig parserConfig;
@@ -73,13 +77,19 @@ public class JdbcLinkUpdater extends ScrapperService implements LinkUpdater {
             linkRepo.remove(link.url());
             return;
         }
-        clientConfig.botClient().sendUpdate(new LinkUpdateRequest(
-            link.id(),
-            link.url(),
-            "Новое обновление по ссылке\n%s\nСоздано в %s"
-                .formatted(link.url(), update.getCreatedAt()),
-            subscribers.stream().map(Chat::tgId).toArray(Long[]::new)
-        ));
+        try {
+            clientConfig.botClient().sendUpdate(new LinkUpdateRequest(
+                link.id(),
+                link.url(),
+                "Новое обновление по ссылке\n%s\nСоздано в %s"
+                    .formatted(link.url(), update.getCreatedAt()),
+                subscribers.stream().map(Chat::tgId).toArray(Long[]::new)
+            ));
+        } catch (BotApiException e) {
+            ApiErrorResponse error = e.getError();
+            log.error("%s: %s. %s: %s"
+                .formatted(error.code(), error.description(), error.exceptionName(), error.exceptionMessage()));
+        }
     }
 
     private Optional<Update> getUpdateFromSource(LinkInfo linkInfo) throws ResponseException {

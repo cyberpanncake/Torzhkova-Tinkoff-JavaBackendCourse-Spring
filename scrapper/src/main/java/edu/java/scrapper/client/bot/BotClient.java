@@ -18,7 +18,7 @@ public class BotClient extends AbstractClient {
 
     public void sendUpdate(LinkUpdateRequest request) {
         client.post()
-            .uri("/update")
+            .uri("/updates")
             .accept(MediaType.APPLICATION_JSON)
             .body(Mono.just(request), LinkUpdateRequest.class)
             .retrieve()
