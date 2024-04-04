@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 @Order(1)
 public class StartCommand extends AbstractClientCommand {
 
-    public StartCommand(ScrapperClient client, CommandConfig config) {
-        super(client, config);
+    public StartCommand(ScrapperClient client) {
+        super(client);
     }
 
     @Override

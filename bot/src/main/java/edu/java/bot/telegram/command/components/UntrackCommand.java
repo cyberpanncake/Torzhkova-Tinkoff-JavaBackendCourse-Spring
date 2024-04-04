@@ -13,15 +13,22 @@ import edu.java.bot.telegram.command.exception.link.LinkNotFoundException;
 import edu.java.bot.telegram.command.exception.parameter.ParameterException;
 import edu.java.dto.api.scrapper.RemoveLinkRequest;
 import edu.java.dto.utils.exception.UrlException;
+import edu.java.bot.telegram.exception.UnregisteredUserException;
+import edu.java.bot.telegram.exception.parameter.ParameterException;
+import edu.java.dto.utils.LinkParser;
+import edu.java.dto.utils.exception.LinkException;
+import edu.java.dto.utils.exception.LinkRegistrationException;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
 @Order(4)
 public class UntrackCommand extends AbstractClientCommand {
+    private final LinkParser parser;
 
-    public UntrackCommand(ScrapperClient client, CommandConfig config) {
-        super(client, config);
+    public UntrackCommand(ScrapperClient client, LinkParser parser) {
+        super(client);
+        this.parser = parser;
     }
 
     @Override
@@ -39,7 +46,7 @@ public class UntrackCommand extends AbstractClientCommand {
         LinkException, CommandExecutionException {
         CommandUtils.checkParamsNumber(params, 1);
         String link = params[0];
-        config.linkParser().parse(link);
+        parser.parse(link);
         try {
             client.deleteLink(tgId, new RemoveLinkRequest(link));
         } catch (ScrapperApiException e) {
