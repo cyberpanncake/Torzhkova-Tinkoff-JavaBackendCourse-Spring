@@ -4,7 +4,6 @@ import edu.java.dto.api.scrapper.LinkResponse;
 import edu.java.scrapper.api.exception.chat.ChatNotFoundException;
 import edu.java.scrapper.api.exception.link.LinkAdditionException;
 import edu.java.scrapper.api.exception.link.LinkNotFoundException;
-
 import java.net.URI;
 import java.util.List;
 
