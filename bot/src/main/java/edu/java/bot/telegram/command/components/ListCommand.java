@@ -1,7 +1,6 @@
 package edu.java.bot.telegram.command.components;
 
 import edu.java.bot.client.service.ScrapperService;
-import edu.java.bot.configuration.CommandConfig;
 import edu.java.bot.telegram.command.AbstractServiceCommand;
 import edu.java.bot.telegram.command.CommandUtils;
 import edu.java.bot.telegram.exception.UnregisteredUserException;
@@ -15,8 +14,8 @@ import org.springframework.stereotype.Component;
 @Order(5)
 public class ListCommand extends AbstractServiceCommand {
 
-    public ListCommand(ScrapperService service, CommandConfig config) {
-        super(service, config);
+    public ListCommand(ScrapperService service) {
+        super(service);
     }
 
     @Override

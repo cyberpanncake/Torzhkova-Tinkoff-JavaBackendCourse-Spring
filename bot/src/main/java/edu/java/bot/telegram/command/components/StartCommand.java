@@ -1,7 +1,6 @@
 package edu.java.bot.telegram.command.components;
 
 import edu.java.bot.client.service.ScrapperService;
-import edu.java.bot.configuration.CommandConfig;
 import edu.java.bot.telegram.command.AbstractServiceCommand;
 import edu.java.bot.telegram.command.CommandUtils;
 import edu.java.bot.telegram.exception.parameter.ParameterException;
@@ -12,8 +11,8 @@ import org.springframework.stereotype.Component;
 @Order(1)
 public class StartCommand extends AbstractServiceCommand {
 
-    public StartCommand(ScrapperService service, CommandConfig config) {
-        super(service, config);
+    public StartCommand(ScrapperService service) {
+        super(service);
     }
 
     @Override
