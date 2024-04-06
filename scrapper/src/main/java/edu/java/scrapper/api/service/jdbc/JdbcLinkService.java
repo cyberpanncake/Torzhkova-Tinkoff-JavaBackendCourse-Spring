@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class JdbcLinkService extends ScrapperService implements LinkService {
 
     @Autowired
-    protected JdbcLinkService(
+    public JdbcLinkService(
         JdbcChatRepository chatRepo, JdbcLinkRepository linkRepo,
         JdbcSubscriptionRepository subscriptionRepo
     ) {

@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class JdbcChatService extends ScrapperService implements ChatService {
 
     @Autowired
-    protected JdbcChatService(
+    public JdbcChatService(
         JdbcChatRepository chatRepo, JdbcLinkRepository linkRepo,
         JdbcSubscriptionRepository subscriptionRepo
     ) {

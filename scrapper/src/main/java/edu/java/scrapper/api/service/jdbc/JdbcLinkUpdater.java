@@ -41,7 +41,7 @@ public class JdbcLinkUpdater extends ScrapperService implements LinkUpdater {
     private final LinkParser parser;
 
     @Autowired
-    protected JdbcLinkUpdater(
+    public JdbcLinkUpdater(
         ApplicationConfig config, ClientConfig clientConfig, LinkParser parser,
         JdbcChatRepository chatRepo, JdbcLinkRepository linkRepo,
         JdbcSubscriptionRepository subscriptionRepo
