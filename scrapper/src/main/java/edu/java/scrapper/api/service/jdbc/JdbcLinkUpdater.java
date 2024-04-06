@@ -3,6 +3,7 @@ package edu.java.scrapper.api.service.jdbc;
 import edu.java.dto.api.bot.ApiErrorResponse;
 import edu.java.dto.api.bot.LinkUpdateRequest;
 import edu.java.dto.utils.LinkInfo;
+import edu.java.dto.utils.LinkParser;
 import edu.java.dto.utils.exception.NotUrlException;
 import edu.java.dto.utils.exception.SourceException;
 import edu.java.scrapper.api.domain.dto.Chat;
@@ -17,7 +18,6 @@ import edu.java.scrapper.client.bot.BotApiException;
 import edu.java.scrapper.client.sources.ResponseException;
 import edu.java.scrapper.configuration.ApplicationConfig;
 import edu.java.scrapper.configuration.ClientConfig;
-import edu.java.scrapper.configuration.LinkParserConfig;
 import edu.java.scrapper.shedule.update.dto.Update;
 import edu.java.scrapper.shedule.update.sources.SourceUpdater;
 import java.time.Duration;
@@ -36,30 +36,31 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 public class JdbcLinkUpdater extends ScrapperService implements LinkUpdater {
+    private final ApplicationConfig.Scheduler scheduler;
     private final ClientConfig clientConfig;
-    private final LinkParserConfig parserConfig;
+    private final LinkParser parser;
 
     @Autowired
     protected JdbcLinkUpdater(
-        ApplicationConfig config, LinkParserConfig parserConfig,
-        ClientConfig clientConfig,
+        ApplicationConfig config, ClientConfig clientConfig, LinkParser parser,
         JdbcChatRepository chatRepo, JdbcLinkRepository linkRepo,
         JdbcSubscriptionRepository subscriptionRepo
     ) {
-        super(config, chatRepo, linkRepo, subscriptionRepo);
-        this.parserConfig = parserConfig;
+        super(chatRepo, linkRepo, subscriptionRepo);
+        this.scheduler = config.scheduler();
+        this.parser = parser;
         this.clientConfig = clientConfig;
     }
 
     @Override
     public int update() {
-        Duration checkDelay = config.scheduler().forceCheckDelay();
+        Duration checkDelay = scheduler.forceCheckDelay();
         OffsetDateTime lastCheck = OffsetDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.SECONDS);
         List<Link> linksNeedToCheck = linkRepo.findAllWithLastCheckOlderThan(lastCheck.minus(checkDelay));
         int countUpdates = 0;
         for (Link link : linksNeedToCheck) {
             try {
-                LinkInfo linkInfo = parserConfig.linkParser().parse(link.url().toString());
+                LinkInfo linkInfo = parser.parse(link.url().toString());
                 Optional<Update> update = getUpdateFromSource(linkInfo);
                 if (update.isPresent() && update.get().getCreatedAt().isAfter(link.lastUpdate())) {
                     countUpdates++;

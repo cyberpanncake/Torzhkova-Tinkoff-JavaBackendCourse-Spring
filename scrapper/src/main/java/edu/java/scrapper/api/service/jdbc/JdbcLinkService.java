@@ -12,7 +12,6 @@ import edu.java.scrapper.api.exception.link.LinkAdditionException;
 import edu.java.scrapper.api.exception.link.LinkNotFoundException;
 import edu.java.scrapper.api.service.LinkService;
 import edu.java.scrapper.api.service.ScrapperService;
-import edu.java.scrapper.configuration.ApplicationConfig;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -29,11 +28,10 @@ public class JdbcLinkService extends ScrapperService implements LinkService {
 
     @Autowired
     protected JdbcLinkService(
-        ApplicationConfig config,
         JdbcChatRepository chatRepo, JdbcLinkRepository linkRepo,
         JdbcSubscriptionRepository subscriptionRepo
     ) {
-        super(config, chatRepo, linkRepo, subscriptionRepo);
+        super(chatRepo, linkRepo, subscriptionRepo);
     }
 
     @Override
