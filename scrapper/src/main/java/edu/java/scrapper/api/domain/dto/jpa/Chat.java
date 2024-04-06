@@ -26,7 +26,6 @@ public class Chat {
     @Column(nullable = false)
     private Long id;
 
-    @Id
     @Column(name = "tg_id", nullable = false)
     private Long tgId;
 
