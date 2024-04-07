@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,4 +33,21 @@ public class Chat {
     @ManyToMany(mappedBy = "chats", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Link> links =
         new LinkedHashSet<>();
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        Chat chat = (Chat) object;
+        return Objects.equals(tgId, chat.tgId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tgId);
+    }
 }
