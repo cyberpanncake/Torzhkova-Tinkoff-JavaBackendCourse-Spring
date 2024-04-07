@@ -14,6 +14,5 @@ import org.springframework.transaction.annotation.Transactional;
 public interface JpaLinkRepository extends JpaRepository<Link, Long> {
     Optional<Link> findByUrl(URI url);
 
-    //    @Query(value = "select * from link where link.last_check < ?", nativeQuery = true)
     List<Link> findByLastCheckLessThanEqual(OffsetDateTime time);
 }

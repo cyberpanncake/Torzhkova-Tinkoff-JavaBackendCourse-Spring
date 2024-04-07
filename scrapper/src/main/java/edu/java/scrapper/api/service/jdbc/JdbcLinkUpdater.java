@@ -28,19 +28,15 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-@Service
 @Slf4j
 public class JdbcLinkUpdater extends ScrapperService implements LinkUpdater {
     private final ApplicationConfig.Scheduler scheduler;
     private final ClientConfig clientConfig;
     private final LinkParser parser;
 
-    @Autowired
     public JdbcLinkUpdater(
         ApplicationConfig config, ClientConfig clientConfig, LinkParser parser,
         JdbcChatRepository chatRepo, JdbcLinkRepository linkRepo,

@@ -11,15 +11,11 @@ import edu.java.scrapper.api.service.ChatService;
 import edu.java.scrapper.api.service.ScrapperService;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-@Service
 public class JdbcChatService extends ScrapperService implements ChatService {
 
-    @Autowired
     public JdbcChatService(
         JdbcChatRepository chatRepo, JdbcLinkRepository linkRepo,
         JdbcSubscriptionRepository subscriptionRepo
