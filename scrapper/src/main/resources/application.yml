@@ -3,7 +3,7 @@ app:
     enable: true
     interval: 10000
     force-check-delay: 300000
-  database-access-type: jdbc
+  database-access-type: jpa
 
 resources:
   base-url:
