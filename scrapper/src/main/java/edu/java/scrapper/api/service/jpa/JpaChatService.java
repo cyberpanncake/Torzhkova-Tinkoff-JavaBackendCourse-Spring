@@ -7,10 +7,9 @@ import edu.java.scrapper.api.domain.repository.jpa.JpaLinkRepository;
 import edu.java.scrapper.api.exception.chat.ChatAlreadyRegisteredException;
 import edu.java.scrapper.api.exception.chat.ChatNotFoundException;
 import edu.java.scrapper.api.service.ChatService;
-import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
+import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public class JpaChatService implements ChatService {
@@ -34,11 +33,7 @@ public class JpaChatService implements ChatService {
 
     @Override
     public void unregister(long tgId) throws ChatNotFoundException {
-        Optional<Chat> ch = chatRepo.findByTgId(tgId);
-        if (ch.isEmpty()) {
-            throw new ChatNotFoundException();
-        }
-        Chat chat = ch.get();
+        Chat chat = chatRepo.findByTgId(tgId).orElseThrow(ChatNotFoundException::new);
         Set<Link> links = chat.getLinks();
         Set<Link> linksCopy = new HashSet<>(links);
         for (Link link : linksCopy) {
