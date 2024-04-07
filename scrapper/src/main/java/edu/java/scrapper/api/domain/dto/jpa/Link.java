@@ -50,4 +50,9 @@ public class Link {
                inverseJoinColumns = @JoinColumn(name = "chat_id"))
     private Set<Chat> chats = new LinkedHashSet<>();
 
+    public Link(URI url, OffsetDateTime createdAt) {
+        this.url = url;
+        this.lastUpdate = createdAt;
+        this.lastCheck = createdAt;
+    }
 }
