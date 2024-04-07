@@ -36,7 +36,6 @@ public class JpaLinkService implements LinkService {
         }
         link.getChats().add(chat);
         chat.getLinks().add(link);
-        chatRepo.save(chat);
         linkRepo.save(link);
         return new LinkResponse(link.getId(), link.getUrl());
     }
@@ -50,7 +49,6 @@ public class JpaLinkService implements LinkService {
         }
         chat.getLinks().remove(link);
         link.getChats().remove(chat);
-        chatRepo.save(chat);
         linkRepo.save(link);
         if (link.getChats().isEmpty()) {
             linkRepo.delete(link);
