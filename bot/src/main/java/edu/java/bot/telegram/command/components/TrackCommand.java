@@ -2,7 +2,6 @@ package edu.java.bot.telegram.command.components;
 
 import edu.java.bot.client.ScrapperApiException;
 import edu.java.bot.client.ScrapperClient;
-import edu.java.bot.configuration.CommandConfig;
 import edu.java.bot.telegram.command.AbstractClientCommand;
 import edu.java.bot.telegram.command.CommandUtils;
 import edu.java.bot.telegram.command.exception.CommandExecutionException;
@@ -12,6 +11,7 @@ import edu.java.bot.telegram.command.exception.link.LinkAlreadyAddedException;
 import edu.java.bot.telegram.command.exception.link.LinkException;
 import edu.java.bot.telegram.command.exception.parameter.ParameterException;
 import edu.java.dto.api.scrapper.AddLinkRequest;
+import edu.java.dto.utils.LinkParser;
 import edu.java.dto.utils.exception.UrlException;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -19,9 +19,11 @@ import org.springframework.stereotype.Component;
 @Component
 @Order(3)
 public class TrackCommand extends AbstractClientCommand {
+    private final LinkParser parser;
 
-    public TrackCommand(ScrapperClient client, CommandConfig config) {
-        super(client, config);
+    public TrackCommand(ScrapperClient client, LinkParser parser) {
+        super(client);
+        this.parser = parser;
     }
 
     @Override
@@ -39,7 +41,7 @@ public class TrackCommand extends AbstractClientCommand {
         LinkException, CommandExecutionException {
         CommandUtils.checkParamsNumber(params, 1);
         String link = params[0];
-        config.linkParser().parse(link);
+        parser.parse(link);
         try {
             client.addLink(tgId, new AddLinkRequest(link));
         } catch (ScrapperApiException e) {

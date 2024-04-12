@@ -2,7 +2,6 @@ package edu.java.bot.telegram.command.components;
 
 import edu.java.bot.client.ScrapperApiException;
 import edu.java.bot.client.ScrapperClient;
-import edu.java.bot.configuration.CommandConfig;
 import edu.java.bot.telegram.command.AbstractClientCommand;
 import edu.java.bot.telegram.command.CommandUtils;
 import edu.java.bot.telegram.command.exception.CommandExecutionException;
@@ -20,8 +19,8 @@ import org.springframework.stereotype.Component;
 @Order(5)
 public class ListCommand extends AbstractClientCommand {
 
-    public ListCommand(ScrapperClient client, CommandConfig config) {
-        super(client, config);
+    public ListCommand(ScrapperClient client) {
+        super(client);
     }
 
     @Override

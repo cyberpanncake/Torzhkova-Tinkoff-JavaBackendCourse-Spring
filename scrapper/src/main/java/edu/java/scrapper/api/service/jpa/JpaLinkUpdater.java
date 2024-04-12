@@ -1,4 +1,4 @@
-package edu.java.scrapper.api.service.jdbc;
+package edu.java.scrapper.api.service.jpa;
 
 import edu.java.dto.api.bot.ApiErrorResponse;
 import edu.java.dto.api.bot.LinkUpdateRequest;
@@ -6,65 +6,62 @@ import edu.java.dto.utils.LinkInfo;
 import edu.java.dto.utils.LinkParser;
 import edu.java.dto.utils.exception.NotUrlException;
 import edu.java.dto.utils.exception.SourceException;
-import edu.java.scrapper.api.domain.dto.Chat;
-import edu.java.scrapper.api.domain.dto.Link;
-import edu.java.scrapper.api.domain.dto.Subscription;
-import edu.java.scrapper.api.domain.repository.jdbc.JdbcChatRepository;
-import edu.java.scrapper.api.domain.repository.jdbc.JdbcLinkRepository;
-import edu.java.scrapper.api.domain.repository.jdbc.JdbcSubscriptionRepository;
+import edu.java.scrapper.api.domain.dto.jpa.Chat;
+import edu.java.scrapper.api.domain.dto.jpa.Link;
+import edu.java.scrapper.api.domain.repository.jpa.JpaLinkRepository;
 import edu.java.scrapper.api.service.LinkUpdater;
-import edu.java.scrapper.api.service.ScrapperService;
 import edu.java.scrapper.client.bot.BotApiException;
 import edu.java.scrapper.client.sources.ResponseException;
 import edu.java.scrapper.configuration.ApplicationConfig;
 import edu.java.scrapper.configuration.ClientConfig;
 import edu.java.scrapper.shedule.update.dto.Update;
 import edu.java.scrapper.shedule.update.sources.SourceUpdater;
-import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @Slf4j
-public class JdbcLinkUpdater extends ScrapperService implements LinkUpdater {
+public class JpaLinkUpdater implements LinkUpdater {
     private final ApplicationConfig.Scheduler scheduler;
     private final ClientConfig clientConfig;
     private final LinkParser parser;
+    private final JpaLinkRepository linkRepo;
 
-    public JdbcLinkUpdater(
+    public JpaLinkUpdater(
         ApplicationConfig config, ClientConfig clientConfig, LinkParser parser,
-        JdbcChatRepository chatRepo, JdbcLinkRepository linkRepo,
-        JdbcSubscriptionRepository subscriptionRepo
+        JpaLinkRepository linkRepo
     ) {
-        super(chatRepo, linkRepo, subscriptionRepo);
         this.scheduler = config.scheduler();
-        this.parser = parser;
         this.clientConfig = clientConfig;
+        this.parser = parser;
+        this.linkRepo = linkRepo;
     }
 
     @Override
     public int update() {
-        Duration checkDelay = scheduler.forceCheckDelay();
         OffsetDateTime lastCheck = OffsetDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.SECONDS);
-        List<Link> linksNeedToCheck = linkRepo.findAllWithLastCheckOlderThan(lastCheck.minus(checkDelay));
+        List<Link> linksNeedToCheck = linkRepo.findByLastCheckLessThanEqual(
+            lastCheck.minus(scheduler.forceCheckDelay()));
         int countUpdates = 0;
         for (Link link : linksNeedToCheck) {
             try {
-                LinkInfo linkInfo = parser.parse(link.url().toString());
+                LinkInfo linkInfo = parser.parse(link.getUrl().toString());
                 Optional<Update> update = getUpdateFromSource(linkInfo);
-                if (update.isPresent() && update.get().getCreatedAt().isAfter(link.lastUpdate())) {
+                if (update.isPresent() && update.get().getCreatedAt().isAfter(link.getLastUpdate())) {
                     countUpdates++;
-                    linkRepo.update(new Link(link.id(), link.url(), update.get().getCreatedAt(), lastCheck));
+                    link.setLastUpdate(update.get().getCreatedAt());
                     processLinkUpdate(update.get(), link);
-                    continue;
                 }
-                linkRepo.update(new Link(link.id(), link.url(), link.lastUpdate(), lastCheck));
+                link.setLastCheck(lastCheck);
+                linkRepo.save(link);
             } catch (NotUrlException | SourceException | ResponseException e) {
                 removeCorruptedLinkWithSubscriptions(link);
             }
@@ -73,19 +70,19 @@ public class JdbcLinkUpdater extends ScrapperService implements LinkUpdater {
     }
 
     private void processLinkUpdate(Update update, Link link) throws SourceException, NotUrlException {
-        List<Chat> subscribers = subscriptionRepo.findAllChatsByLink(link);
+        Set<Chat> subscribers = link.getChats();
         if (subscribers.isEmpty()) {
-            linkRepo.remove(link.url());
+            linkRepo.delete(link);
             return;
         }
         try {
             clientConfig.botClient().sendUpdate(new LinkUpdateRequest(
-                link.id(),
-                link.url(),
+                link.getId(),
+                link.getUrl(),
                 "Новое обновление по ссылке\n%s\n\nСоздано в %s по Гринвичу"
-                    .formatted(link.url(), update.getCreatedAt()
+                    .formatted(link.getUrl(), update.getCreatedAt()
                         .format(DateTimeFormatter.ofPattern("HH:mm (dd.MM.yyyy г.)"))),
-                subscribers.stream().map(Chat::tgId).toArray(Long[]::new)
+                subscribers.stream().map(Chat::getTgId).toArray(Long[]::new)
             ));
         } catch (BotApiException e) {
             ApiErrorResponse error = e.getError();
@@ -103,17 +100,14 @@ public class JdbcLinkUpdater extends ScrapperService implements LinkUpdater {
     }
 
     private void removeCorruptedLinkWithSubscriptions(Link link) {
-        List<Chat> subscribers = subscriptionRepo.findAllChatsByLink(link);
-        for (Chat subscriber : subscribers) {
-            Subscription subscription = new Subscription(subscriber.id(), link.id());
-            subscriptionRepo.remove(subscription);
-        }
-        linkRepo.remove(link.url());
+        Set<Chat> subscribers = new HashSet<>(link.getChats());
+        link.getChats().clear();
+        linkRepo.delete(link);
         clientConfig.botClient().sendUpdate(new LinkUpdateRequest(
-            link.id(),
-            link.url(),
-            "Ссылка\n" + link.url() + "\n больше не доступна, поэтому она удалена из Ваших подписок",
-            subscribers.stream().map(Chat::tgId).toArray(Long[]::new)
+            link.getId(),
+            link.getUrl(),
+            "Ссылка\n" + link.getUrl() + "\n больше не доступна, поэтому она удалена из Ваших подписок",
+            subscribers.stream().map(Chat::getTgId).toArray(Long[]::new)
         ));
     }
 }

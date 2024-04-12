@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 public abstract class SubscriptionRepositoryTest extends IntegrationTest {
     private static final long TG_ID = 11111;
     private static final URI URL =
@@ -34,7 +35,6 @@ public abstract class SubscriptionRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    @Transactional
     @Rollback
     void addTest() {
         Chat chat = chatRepo.add(TG_ID);
@@ -45,7 +45,6 @@ public abstract class SubscriptionRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    @Transactional
     @Rollback
     void addDuplicateExceptionTest() {
         Chat chat = chatRepo.add(TG_ID);
@@ -56,7 +55,6 @@ public abstract class SubscriptionRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    @Transactional
     @Rollback
     void findTest() {
         Chat chat = chatRepo.add(TG_ID);
@@ -68,7 +66,6 @@ public abstract class SubscriptionRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    @Transactional
     @Rollback
     void findNotExistTest() {
         Chat chat = chatRepo.add(TG_ID);
@@ -79,7 +76,6 @@ public abstract class SubscriptionRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    @Transactional
     @Rollback
     void deleteTest() {
         Chat chat = chatRepo.add(TG_ID);
@@ -92,7 +88,6 @@ public abstract class SubscriptionRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    @Transactional
     @Rollback
     void findAllTest() {
         Chat chat1 = chatRepo.add(TG_ID);
