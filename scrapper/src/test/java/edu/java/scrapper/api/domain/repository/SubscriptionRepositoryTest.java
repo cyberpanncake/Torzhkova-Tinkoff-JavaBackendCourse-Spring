@@ -7,6 +7,7 @@ import edu.java.scrapper.api.domain.dto.Subscription;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import java.net.URI;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public abstract class SubscriptionRepositoryTest extends IntegrationTest {
     private static final long TG_ID = 11111;
     private static final URI URL =
@@ -68,9 +70,8 @@ public abstract class SubscriptionRepositoryTest extends IntegrationTest {
     @Test
     @Rollback
     void findNotExistTest() {
-        Chat chat = chatRepo.add(TG_ID);
-        Link link = linkRepo.add(new Link(null, URL, NOW, NOW));
-        Subscription subscription = new Subscription(chat.id(), link.id());
+        chatRepo.add(TG_ID);
+        linkRepo.add(new Link(null, URL, NOW, NOW));
         Optional<Subscription> actual = repo.find(TG_ID, URL);
         Assertions.assertTrue(actual.isEmpty());
     }
