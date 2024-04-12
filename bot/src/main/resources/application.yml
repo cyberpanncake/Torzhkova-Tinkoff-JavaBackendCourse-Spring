@@ -8,7 +8,7 @@ spring:
     time-zone: UTC
   cache:
     cache-names:
-      - bucket
+      - rate-limiting-bucket
     caffeine:
       spec: maximumSize=100000,expireAfterAccess=3600s
 
@@ -29,11 +29,12 @@ springdoc:
 bucket4j:
   enabled: true
   filters:
-    - cache-name: bucket
-      url: /.*
-      http-response-body: "{ \"status\": 429, \"error\": \"Too Many Requests\", \"message\": \"You have exhausted your API Request Quota\" }"
+    - cache-name: rate-limiting-bucket
+      url: .*
+      http-status-code: TOO_MANY_REQUESTS
+      http-response-body: "{ \"description\": \"Too many requests\", \"code\": \"429\", \"exception_name\": \"\", \"exception_message\": \"\", \"stacktrace\": [] }"
       rate-limits:
-        - cache-key: "getHeader('X-Forwarded-For')"
+        - cache-key: getHeader('X-Forwarded-For')
           bandwidths:
             - capacity: 1
               time: 1
