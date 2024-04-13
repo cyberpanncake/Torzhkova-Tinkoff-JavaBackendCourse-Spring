@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import reactor.util.retry.Retry;
 
 @Configuration
 @RequiredArgsConstructor
@@ -24,12 +25,14 @@ public class ClientConfig {
     @Value("${resources.base-url.bot}")
     private String botUrl;
     private final ObjectMapper objectMapper;
+    private final Retry retry;
 
     @Bean
     public GithubClient githubClient() {
         return new GithubClient(
             Strings.isNotEmpty(githubUrl) ? githubUrl : DEFAULT_GITHUB_URL,
-            objectMapper
+            objectMapper,
+            retry
         );
     }
 
@@ -37,12 +40,13 @@ public class ClientConfig {
     public StackoverflowClient stackoverflowClient() {
         return new StackoverflowClient(
             Strings.isNotEmpty(stackoverflowUrl) ? stackoverflowUrl : DEFAULT_STACKOVERFLOW_URL,
-            objectMapper
+            objectMapper,
+            retry
         );
     }
 
     @Bean
     public BotClient botClient() {
-        return new BotClient(botUrl, objectMapper);
+        return new BotClient(botUrl, objectMapper, retry);
     }
 }

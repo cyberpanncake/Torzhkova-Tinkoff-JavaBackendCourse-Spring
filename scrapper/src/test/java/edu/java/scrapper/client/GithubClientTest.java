@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.util.UriComponentsBuilder;
+import reactor.util.retry.Retry;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -26,8 +27,10 @@ class GithubClientTest {
     private WireMockServer server;
     private GithubClient client;
     private final ObjectMapper mapper;
+    private final Retry retry;
 
-    GithubClientTest() {
+    GithubClientTest(Retry retry) {
+        this.retry = retry;
         this.mapper = new ObjectMapperConfig().objectMapper();
     }
 
@@ -35,7 +38,7 @@ class GithubClientTest {
     void setUp() {
         server = new WireMockServer();
         server.start();
-        client = new GithubClient(server.baseUrl(), mapper);
+        client = new GithubClient(server.baseUrl(), mapper, retry);
     }
 
     @AfterEach

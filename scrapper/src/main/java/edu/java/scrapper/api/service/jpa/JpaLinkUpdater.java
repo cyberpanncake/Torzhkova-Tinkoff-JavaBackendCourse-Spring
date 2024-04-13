@@ -2,6 +2,7 @@ package edu.java.scrapper.api.service.jpa;
 
 import edu.java.dto.api.bot.ApiErrorResponse;
 import edu.java.dto.api.bot.LinkUpdateRequest;
+import edu.java.dto.api.exception.BotApiException;
 import edu.java.dto.utils.LinkInfo;
 import edu.java.dto.utils.LinkParser;
 import edu.java.dto.utils.exception.NotUrlException;
@@ -10,7 +11,6 @@ import edu.java.scrapper.api.domain.dto.jpa.Chat;
 import edu.java.scrapper.api.domain.dto.jpa.Link;
 import edu.java.scrapper.api.domain.repository.jpa.JpaLinkRepository;
 import edu.java.scrapper.api.service.LinkUpdater;
-import edu.java.scrapper.client.bot.BotApiException;
 import edu.java.scrapper.client.sources.ResponseException;
 import edu.java.scrapper.configuration.ApplicationConfig;
 import edu.java.scrapper.configuration.ClientConfig;
