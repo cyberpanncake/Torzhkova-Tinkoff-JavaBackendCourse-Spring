@@ -53,3 +53,12 @@ bucket4j:
             - capacity: 1
               time: 1
               unit: minutes
+
+retry:
+  enable: true
+  max-attempts: 3
+  strategy: constant
+  interval: 2000
+  codes:
+    - '500'
+    - '429'
