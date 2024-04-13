@@ -2,6 +2,7 @@ package edu.java.scrapper.api.service.jpa;
 
 import edu.java.dto.api.bot.ApiErrorResponse;
 import edu.java.dto.api.bot.LinkUpdateRequest;
+import edu.java.dto.api.exception.ApiException;
 import edu.java.dto.api.exception.BotApiException;
 import edu.java.dto.utils.LinkInfo;
 import edu.java.dto.utils.LinkParser;
@@ -30,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Slf4j
 public class JpaLinkUpdater implements LinkUpdater {
+    private static final String ERROR_LOG = "%s: %s";
     private final ApplicationConfig.Scheduler scheduler;
     private final ClientConfig clientConfig;
     private final LinkParser parser;
@@ -64,6 +66,8 @@ public class JpaLinkUpdater implements LinkUpdater {
                 linkRepo.save(link);
             } catch (NotUrlException | SourceException | ResponseException e) {
                 removeCorruptedLinkWithSubscriptions(link);
+            } catch (ApiException e) {
+                log.error(ERROR_LOG.formatted(e.getHttpCode(), e.getMessage()));
             }
         }
         return countUpdates;
@@ -88,10 +92,12 @@ public class JpaLinkUpdater implements LinkUpdater {
             ApiErrorResponse error = e.getError();
             log.error("%s: %s. %s: %s"
                 .formatted(error.code(), error.description(), error.exceptionName(), error.exceptionMessage()));
+        } catch (ApiException e) {
+            log.error(ERROR_LOG.formatted(e.getHttpCode(), e.getMessage()));
         }
     }
 
-    private Optional<Update> getUpdateFromSource(LinkInfo linkInfo) throws ResponseException {
+    private Optional<Update> getUpdateFromSource(LinkInfo linkInfo) throws ResponseException, ApiException {
         SourceUpdater updater = SourceUpdater.getUpdaterForSource(clientConfig, linkInfo.source());
         if (updater != null) {
             return updater.getUpdate(linkInfo.source());

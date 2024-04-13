@@ -2,6 +2,7 @@ package edu.java.scrapper.api.service.jdbc;
 
 import edu.java.dto.api.bot.ApiErrorResponse;
 import edu.java.dto.api.bot.LinkUpdateRequest;
+import edu.java.dto.api.exception.ApiException;
 import edu.java.dto.api.exception.BotApiException;
 import edu.java.dto.utils.LinkInfo;
 import edu.java.dto.utils.LinkParser;
@@ -33,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Slf4j
 public class JdbcLinkUpdater extends ScrapperService implements LinkUpdater {
+    private static final String ERROR_LOG = "%s: %s";
     private final ApplicationConfig.Scheduler scheduler;
     private final ClientConfig clientConfig;
     private final LinkParser parser;
@@ -67,6 +69,8 @@ public class JdbcLinkUpdater extends ScrapperService implements LinkUpdater {
                 linkRepo.update(new Link(link.id(), link.url(), link.lastUpdate(), lastCheck));
             } catch (NotUrlException | SourceException | ResponseException e) {
                 removeCorruptedLinkWithSubscriptions(link);
+            } catch (ApiException e) {
+                log.error(ERROR_LOG.formatted(e.getHttpCode(), e.getMessage()));
             }
         }
         return countUpdates;
@@ -91,6 +95,8 @@ public class JdbcLinkUpdater extends ScrapperService implements LinkUpdater {
             ApiErrorResponse error = e.getError();
             log.error("%s: %s. %s: %s"
                 .formatted(error.code(), error.description(), error.exceptionName(), error.exceptionMessage()));
+        } catch (ApiException e) {
+            log.error(ERROR_LOG.formatted(e.getHttpCode(), e.getMessage()));
         }
     }
 
