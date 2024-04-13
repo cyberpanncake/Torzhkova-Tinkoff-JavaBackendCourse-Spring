@@ -66,8 +66,6 @@ public class JpaLinkUpdater implements LinkUpdater {
                 linkRepo.save(link);
             } catch (NotUrlException | SourceException | ResponseException e) {
                 removeCorruptedLinkWithSubscriptions(link);
-            } catch (ApiException e) {
-                log.error(ERROR_LOG.formatted(e.getHttpCode(), e.getMessage()));
             }
         }
         return countUpdates;

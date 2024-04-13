@@ -36,7 +36,7 @@ public class StackoverflowClient extends AbstractClient {
             JsonNode root = jsonNodeMono.block();
             JsonNode update = root.get("items").get(0);
             return Optional.ofNullable(mapper.treeToValue(update, StackoverflowResponse.class));
-        } catch (WebClientResponseException | NullPointerException | JsonProcessingException e) {
+        } catch (WebClientResponseException | NullPointerException | JsonProcessingException | ApiException e) {
             throw new ResponseException();
         }
     }

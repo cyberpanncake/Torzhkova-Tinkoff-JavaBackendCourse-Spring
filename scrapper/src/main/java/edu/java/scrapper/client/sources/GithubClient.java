@@ -33,7 +33,7 @@ public class GithubClient extends AbstractClient {
             JsonNode root = jsonNodeMono.block();
             JsonNode update = root.get(0);
             return Optional.ofNullable(mapper.treeToValue(update, GithubResponse.class));
-        } catch (WebClientResponseException | NullPointerException | JsonProcessingException e) {
+        } catch (WebClientResponseException | NullPointerException | JsonProcessingException | ApiException e) {
             throw new ResponseException();
         }
     }

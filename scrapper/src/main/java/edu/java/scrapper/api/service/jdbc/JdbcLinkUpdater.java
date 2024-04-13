@@ -69,8 +69,6 @@ public class JdbcLinkUpdater extends ScrapperService implements LinkUpdater {
                 linkRepo.update(new Link(link.id(), link.url(), link.lastUpdate(), lastCheck));
             } catch (NotUrlException | SourceException | ResponseException e) {
                 removeCorruptedLinkWithSubscriptions(link);
-            } catch (ApiException e) {
-                log.error(ERROR_LOG.formatted(e.getHttpCode(), e.getMessage()));
             }
         }
         return countUpdates;

@@ -9,6 +9,7 @@ import edu.java.scrapper.configuration.ObjectMapperConfig;
 import edu.java.scrapper.client.sources.dto.StackoverflowResponse;
 import java.util.Map;
 import java.util.Optional;
+import edu.java.scrapper.configuration.RetryConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,8 +29,8 @@ class StackoverflowClientTest {
     private final ObjectMapper mapper;
     private final Retry retry;
 
-    StackoverflowClientTest(Retry retry) {
-        this.retry = retry;
+    StackoverflowClientTest() {
+        this.retry = new RetryConfig(false, null, 0, null, null).clientRetry();
         this.mapper = new ObjectMapperConfig().objectMapper();
     }
 
