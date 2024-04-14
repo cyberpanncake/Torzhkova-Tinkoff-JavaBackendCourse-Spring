@@ -1,8 +1,8 @@
 package edu.java.scrapper.client.bot;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.java.api_dto.bot.ApiErrorResponse;
-import edu.java.api_dto.bot.LinkUpdateRequest;
+import edu.java.dto.api.bot.ApiErrorResponse;
+import edu.java.dto.api.bot.LinkUpdateRequest;
 import edu.java.scrapper.client.AbstractClient;
 import lombok.NonNull;
 import org.springframework.http.HttpStatusCode;

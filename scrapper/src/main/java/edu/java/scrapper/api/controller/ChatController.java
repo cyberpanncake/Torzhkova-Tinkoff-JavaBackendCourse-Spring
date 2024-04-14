@@ -1,6 +1,9 @@
 package edu.java.scrapper.api.controller;
 
-import edu.java.api_dto.scrapper.ApiErrorResponse;
+import edu.java.dto.api.scrapper.ApiErrorResponse;
+import edu.java.scrapper.api.exception.chat.ChatAlreadyRegisteredException;
+import edu.java.scrapper.api.exception.chat.ChatNotFoundException;
+import edu.java.scrapper.api.service.ChatService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -17,6 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/tg-chat")
 public class ChatController {
+    private final ChatService service;
+
+    public ChatController(ChatService service) {
+        this.service = service;
+    }
 
     @Operation(summary = "Зарегистрировать чат")
     @ApiResponses(value = {
@@ -26,11 +34,8 @@ public class ChatController {
                                          schema = @Schema(implementation = ApiErrorResponse.class))})
     })
     @PostMapping("/{id}")
-    public ResponseEntity<Void> registerChat(@PathVariable @Positive long id) {
-        /*
-        TODO: регистрация чата
-        может быть брошено ChatRegistrationException
-         */
+    public ResponseEntity<Void> registerChat(@PathVariable @Positive long id) throws ChatAlreadyRegisteredException {
+        service.register(id);
         return ResponseEntity.ok().build();
     }
 
@@ -45,11 +50,8 @@ public class ChatController {
                                          schema = @Schema(implementation = ApiErrorResponse.class))})
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteChat(@PathVariable @Positive long id) {
-        /*
-        TODO: удаление чата
-        может быть брошено ChatNotFoundException
-         */
+    public ResponseEntity<Void> deleteChat(@PathVariable @Positive long id) throws ChatNotFoundException {
+        service.unregister(id);
         return ResponseEntity.ok().build();
     }
 }

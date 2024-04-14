@@ -1,11 +1,11 @@
 package edu.java.bot.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.java.api_dto.scrapper.AddLinkRequest;
-import edu.java.api_dto.scrapper.ApiErrorResponse;
-import edu.java.api_dto.scrapper.LinkResponse;
-import edu.java.api_dto.scrapper.ListLinksResponse;
-import edu.java.api_dto.scrapper.RemoveLinkRequest;
+import edu.java.dto.api.scrapper.AddLinkRequest;
+import edu.java.dto.api.scrapper.ApiErrorResponse;
+import edu.java.dto.api.scrapper.LinkResponse;
+import edu.java.dto.api.scrapper.ListLinksResponse;
+import edu.java.dto.api.scrapper.RemoveLinkRequest;
 import lombok.NonNull;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;

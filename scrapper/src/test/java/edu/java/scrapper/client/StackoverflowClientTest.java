@@ -6,7 +6,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import edu.java.scrapper.client.sources.ResponseException;
 import edu.java.scrapper.client.sources.StackoverflowClient;
 import edu.java.scrapper.configuration.ObjectMapperConfig;
-import edu.java.scrapper.dto.StackoverflowResponse;
+import edu.java.scrapper.client.sources.dto.StackoverflowResponse;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;

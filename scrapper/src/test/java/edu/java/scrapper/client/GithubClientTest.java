@@ -6,7 +6,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import edu.java.scrapper.client.sources.GithubClient;
 import edu.java.scrapper.client.sources.ResponseException;
 import edu.java.scrapper.configuration.ObjectMapperConfig;
-import edu.java.scrapper.dto.GithubResponse;
+import edu.java.scrapper.client.sources.dto.GithubResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;

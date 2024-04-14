@@ -1,6 +1,6 @@
 package edu.java.scrapper.api.exception.chat;
 
-import edu.java.api_dto.scrapper.ApiErrorResponse;
+import edu.java.dto.api.scrapper.ApiErrorResponse;
 import java.util.Arrays;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ChatExceptionApiHandler {
 
-    @ExceptionHandler(ChatRegistrationException.class)
-    public ResponseEntity<ApiErrorResponse> chatRegistrationException(ChatRegistrationException exception) {
+    @ExceptionHandler(ChatAlreadyRegisteredException.class)
+    public ResponseEntity<ApiErrorResponse> chatRegistrationException(ChatAlreadyRegisteredException exception) {
         ApiErrorResponse error = new ApiErrorResponse(
-            "Чат с уже зарегистрирован",
+            "Чат уже зарегистрирован",
             HttpStatus.BAD_REQUEST.toString(),
             exception.getClass().getName(),
             exception.getMessage(),
@@ -29,7 +29,7 @@ public class ChatExceptionApiHandler {
     @ExceptionHandler(ChatNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> chatNotFoundException(ChatNotFoundException exception) {
         ApiErrorResponse error = new ApiErrorResponse(
-            "Чат с id не найден",
+            "Чат не найден",
             HttpStatus.NOT_FOUND.toString(),
             exception.getClass().getName(),
             exception.getMessage(),

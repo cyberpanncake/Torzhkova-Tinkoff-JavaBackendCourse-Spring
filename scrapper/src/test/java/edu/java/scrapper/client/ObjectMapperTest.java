@@ -3,7 +3,7 @@ package edu.java.scrapper.client;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.java.scrapper.configuration.ObjectMapperConfig;
-import edu.java.scrapper.dto.GithubResponse;
+import edu.java.scrapper.client.sources.dto.GithubResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import java.time.OffsetDateTime;

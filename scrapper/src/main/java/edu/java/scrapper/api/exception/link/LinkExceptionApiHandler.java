@@ -1,6 +1,6 @@
 package edu.java.scrapper.api.exception.link;
 
-import edu.java.api_dto.scrapper.ApiErrorResponse;
+import edu.java.dto.api.scrapper.ApiErrorResponse;
 import java.util.Arrays;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
