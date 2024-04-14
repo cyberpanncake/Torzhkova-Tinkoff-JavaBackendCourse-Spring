@@ -1,7 +1,7 @@
 package edu.java.dto.retry;
 
 public enum BackoffStrategy {
-    CONSTANT,
+    FIXED,
     LINEAR,
     EXPONENTIAL
 }

@@ -43,7 +43,7 @@ bucket4j:
 retry:
   enable: true
   max-attempts: 3
-  strategy: constant
+  strategy: fixed
   interval: 2000
   codes:
     - '500'
