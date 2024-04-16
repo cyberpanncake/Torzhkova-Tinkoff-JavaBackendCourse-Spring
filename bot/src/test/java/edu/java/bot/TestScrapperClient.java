@@ -1,7 +1,7 @@
 package edu.java.bot;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.java.bot.client.ScrapperApiException;
+import edu.java.dto.api.exception.ScrapperApiException;
 import edu.java.bot.client.ScrapperClient;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,6 +13,7 @@ import edu.java.dto.api.scrapper.ListLinksResponse;
 import edu.java.dto.api.scrapper.RemoveLinkRequest;
 import lombok.NonNull;
 import lombok.Setter;
+import reactor.util.retry.Retry;
 
 public class TestScrapperClient extends ScrapperClient {
     @Setter
@@ -20,8 +21,8 @@ public class TestScrapperClient extends ScrapperClient {
     @Setter
     private List<String> links;
 
-    public TestScrapperClient(@NonNull String baseUrl, ObjectMapper mapper) {
-        super(baseUrl, mapper);
+    public TestScrapperClient(@NonNull String baseUrl, ObjectMapper mapper, Retry retry) {
+        super(baseUrl, mapper, retry);
     }
 
     @Override

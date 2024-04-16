@@ -21,9 +21,13 @@ spring:
     url: "jdbc:postgresql://localhost:5433/scrapper"
     username: "postgres"
     password: "postgres"
-
   jackson:
     property-naming-strategy: SNAKE_CASE
+  cache:
+    cache-names:
+      - rate-limiting-bucket
+    caffeine:
+      spec: maximumSize=100000,expireAfterAccess=3600s
 
 
 server:
@@ -35,3 +39,26 @@ logging:
 springdoc:
   swagger-ui:
     path: /swagger-ui
+
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: rate-limiting-bucket
+      url: .*
+      http-status-code: TOO_MANY_REQUESTS
+      http-response-body: "{ \"description\": \"Too many requests\", \"code\": \"429\", \"exception_name\": \"\", \"exception_message\": \"\", \"stacktrace\": [] }"
+      rate-limits:
+        - cache-key: getHeader('X-Forwarded-For')
+          bandwidths:
+            - capacity: 1
+              time: 1
+              unit: minutes
+
+retry:
+  enable: true
+  max-attempts: 3
+  strategy: linear
+  interval: 2000
+  codes:
+    - '500'
+    - '429'

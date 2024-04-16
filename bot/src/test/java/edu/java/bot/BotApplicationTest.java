@@ -35,6 +35,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import reactor.util.retry.Retry;
 import static org.mockito.Mockito.when;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -49,9 +50,10 @@ class BotApplicationTest {
     @Mock
     private User userMock;
 
-    @Autowired BotApplicationTest(TelegramBotConfig config) {
+    @Autowired
+    BotApplicationTest(TelegramBotConfig config, Retry retry) {
         this.config = config;
-        this.client = new TestScrapperClient("", new ObjectMapper());
+        this.client = new TestScrapperClient("", new ObjectMapper(), retry);
         for (Command command : config.commands()) {
             if (command instanceof AbstractClientCommand sc) {
                 sc.setClient(client);

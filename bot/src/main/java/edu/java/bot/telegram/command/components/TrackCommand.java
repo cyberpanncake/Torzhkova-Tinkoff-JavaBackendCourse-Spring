@@ -1,6 +1,5 @@
 package edu.java.bot.telegram.command.components;
 
-import edu.java.bot.client.ScrapperApiException;
 import edu.java.bot.client.ScrapperClient;
 import edu.java.bot.telegram.command.AbstractClientCommand;
 import edu.java.bot.telegram.command.CommandUtils;
@@ -10,6 +9,7 @@ import edu.java.bot.telegram.command.exception.chat.ChatNotFoundException;
 import edu.java.bot.telegram.command.exception.link.LinkAlreadyAddedException;
 import edu.java.bot.telegram.command.exception.link.LinkException;
 import edu.java.bot.telegram.command.exception.parameter.ParameterException;
+import edu.java.dto.api.exception.ScrapperApiException;
 import edu.java.dto.api.scrapper.AddLinkRequest;
 import edu.java.dto.utils.LinkParser;
 import edu.java.dto.utils.exception.UrlException;

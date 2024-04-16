@@ -50,6 +50,7 @@ public class TgBotController {
                      | LinkException e) {
                 message = e.getMessage();
             } catch (Exception e) {
+                message = "Возникла непредвиденная ошибка, попробуйте повторить запрос позже";
                 log.error("%s. Чат %d. Сообщение: \"%s\". Ошибка: \"%s\""
                     .formatted(LocalDateTime.now(), chatId, update.message().text(), e.getMessage()));
             }
