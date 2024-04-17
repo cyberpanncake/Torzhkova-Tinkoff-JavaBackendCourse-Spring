@@ -12,6 +12,7 @@ import edu.java.scrapper.api.domain.dto.jpa.Chat;
 import edu.java.scrapper.api.domain.dto.jpa.Link;
 import edu.java.scrapper.api.domain.repository.jpa.JpaLinkRepository;
 import edu.java.scrapper.api.service.LinkUpdater;
+import edu.java.scrapper.api.service.updates.LinkUpdateSender;
 import edu.java.scrapper.client.sources.ResponseException;
 import edu.java.scrapper.configuration.ApplicationConfig;
 import edu.java.scrapper.configuration.ClientConfig;
@@ -34,15 +35,17 @@ public class JpaLinkUpdater implements LinkUpdater {
     private static final String ERROR_LOG = "%s: %s";
     private final ApplicationConfig.Scheduler scheduler;
     private final ClientConfig clientConfig;
+    private final LinkUpdateSender sender;
     private final LinkParser parser;
     private final JpaLinkRepository linkRepo;
 
     public JpaLinkUpdater(
-        ApplicationConfig config, ClientConfig clientConfig, LinkParser parser,
+        ApplicationConfig config, ClientConfig clientConfig, LinkUpdateSender sender, LinkParser parser,
         JpaLinkRepository linkRepo
     ) {
         this.scheduler = config.scheduler();
         this.clientConfig = clientConfig;
+        this.sender = sender;
         this.parser = parser;
         this.linkRepo = linkRepo;
     }
@@ -78,7 +81,7 @@ public class JpaLinkUpdater implements LinkUpdater {
             return;
         }
         try {
-            clientConfig.botClient().sendUpdate(new LinkUpdateRequest(
+            sender.send(new LinkUpdateRequest(
                 link.getId(),
                 link.getUrl(),
                 "Новое обновление по ссылке\n%s\n\nСоздано в %s по Гринвичу"
@@ -107,7 +110,7 @@ public class JpaLinkUpdater implements LinkUpdater {
         Set<Chat> subscribers = new HashSet<>(link.getChats());
         link.getChats().clear();
         linkRepo.delete(link);
-        clientConfig.botClient().sendUpdate(new LinkUpdateRequest(
+        sender.send(new LinkUpdateRequest(
             link.getId(),
             link.getUrl(),
             "Ссылка\n" + link.getUrl() + "\n больше не доступна, поэтому она удалена из Ваших подписок",
