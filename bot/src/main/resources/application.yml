@@ -39,7 +39,7 @@ bucket4j:
       rate-limits:
         - cache-key: getHeader('X-Forwarded-For')
           bandwidths:
-            - capacity: 1
+            - capacity: 10
               time: 1
               unit: minutes
 
