@@ -87,8 +87,8 @@ public class JdbcLinkUpdater extends ScrapperService implements LinkUpdater {
             sender.send(new LinkUpdateRequest(
                 link.id(),
                 link.url(),
-                "Новое обновление по ссылке\n%s\n\nСоздано в %s по Гринвичу"
-                    .formatted(link.url(), update.getCreatedAt()
+                "Новое обновление по ссылке\n%s\n%s\n\nСоздано в %s по Гринвичу"
+                    .formatted(link.url(), update.getDetails(), update.getCreatedAt()
                         .format(DateTimeFormatter.ofPattern("HH:mm (dd.MM.yyyy г.)"))),
                 subscribers.stream().map(Chat::tgId).toArray(Long[]::new)
             ));

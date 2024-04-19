@@ -5,8 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import edu.java.scrapper.client.sources.GithubClient;
 import edu.java.scrapper.client.sources.ResponseException;
+import edu.java.scrapper.client.sources.dto.SourceUpdate;
 import edu.java.scrapper.configuration.ObjectMapperConfig;
-import edu.java.scrapper.client.sources.dto.GithubResponse;
+import edu.java.scrapper.client.sources.dto.github.GithubEvent;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -88,8 +89,8 @@ class GithubClientTest {
                 .withStatus(200)
                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .withBody(response)));
-        Optional<GithubResponse> expected = Optional.ofNullable(parse(response));
-        Optional<GithubResponse> actual = client.getUpdate(author, repo);
+        Optional<GithubEvent> expected = Optional.ofNullable(parse(response));
+        Optional<SourceUpdate> actual = client.getUpdate(author, repo);
         Assertions.assertEquals(expected, actual);
     }
 
@@ -116,9 +117,9 @@ class GithubClientTest {
         Assertions.assertThrows(ResponseException.class, () -> client.getUpdate(author, repo));
     }
 
-    private GithubResponse parse(String json) {
+    private GithubEvent parse(String json) {
         try {
-            List<GithubResponse> responses = mapper.readValue(json, new TypeReference<>() {
+            List<GithubEvent> responses = mapper.readValue(json, new TypeReference<>() {
             });
             return responses.get(0);
         } catch (Exception e) {

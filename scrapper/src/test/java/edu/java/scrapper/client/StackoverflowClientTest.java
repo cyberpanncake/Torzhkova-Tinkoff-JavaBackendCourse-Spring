@@ -6,7 +6,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import edu.java.scrapper.client.sources.ResponseException;
 import edu.java.scrapper.client.sources.StackoverflowClient;
 import edu.java.scrapper.configuration.ObjectMapperConfig;
-import edu.java.scrapper.client.sources.dto.StackoverflowResponse;
+import edu.java.scrapper.client.sources.dto.SourceUpdate;
 import java.util.Map;
 import java.util.Optional;
 import edu.java.scrapper.configuration.RetryConfig;
@@ -91,8 +91,8 @@ class StackoverflowClientTest {
                 .withStatus(200)
                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .withBody(response)));
-        Optional<StackoverflowResponse> expected = Optional.ofNullable(parse(response));
-        Optional<StackoverflowResponse> actual = client.getUpdate(questionId);
+        Optional<SourceUpdate> expected = Optional.ofNullable(parse(response));
+        Optional<SourceUpdate> actual = client.getUpdate(questionId);
         Assertions.assertEquals(expected, actual);
     }
 
@@ -123,11 +123,11 @@ class StackoverflowClientTest {
         Assertions.assertThrows(ResponseException.class, () -> client.getUpdate(questionId));
     }
 
-    private StackoverflowResponse parse(String json) {
+    private SourceUpdate parse(String json) {
         try {
             JsonNode rootNode = mapper.readTree(json);
             JsonNode update = rootNode.get("items").get(0);
-            return mapper.treeToValue(update, StackoverflowResponse.class);
+            return mapper.treeToValue(update, SourceUpdate.class);
         } catch (Exception e) {
             return null;
         }
