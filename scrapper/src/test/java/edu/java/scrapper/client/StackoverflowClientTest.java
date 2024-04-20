@@ -130,7 +130,7 @@ class StackoverflowClientTest {
             }
             """;
         String uri2 = UriComponentsBuilder.newInstance()
-            .path("/questions/{questionId}/answers")
+            .path("/questions/{questionId}/comments")
             .uriVariables(Map.of("questionId", questionId))
             .queryParam("site", "stackoverflow")
             .queryParam("pagesize", 1)
