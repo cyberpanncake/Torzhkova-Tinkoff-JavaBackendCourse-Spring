@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import edu.java.scrapper.client.sources.ResponseException;
 import edu.java.scrapper.client.sources.StackoverflowClient;
+import edu.java.scrapper.client.sources.dto.stackoverflow.StackoverflowAnswer;
 import edu.java.scrapper.configuration.ObjectMapperConfig;
 import edu.java.scrapper.client.sources.dto.SourceUpdate;
 import java.util.Map;
@@ -178,7 +179,7 @@ class StackoverflowClientTest {
         try {
             JsonNode rootNode = mapper.readTree(json);
             JsonNode update = rootNode.get("items").get(0);
-            return mapper.treeToValue(update, SourceUpdate.class);
+            return mapper.treeToValue(update, StackoverflowAnswer.class);
         } catch (Exception e) {
             return null;
         }
