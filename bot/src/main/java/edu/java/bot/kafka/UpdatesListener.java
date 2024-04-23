@@ -1,6 +1,6 @@
 package edu.java.bot.kafka;
 
-import edu.java.bot.kafka.dlq.DeadLetterQueue;
+import edu.java.bot.kafka.dlq.DeadLetterQueueProducer;
 import edu.java.bot.telegram.LinkUpdateToTgSender;
 import edu.java.dto.api.bot.LinkUpdateRequest;
 import jakarta.validation.ConstraintViolation;
@@ -20,20 +20,20 @@ import org.springframework.stereotype.Component;
 public class UpdatesListener {
     private final LinkUpdateToTgSender sender;
     private final Validator validator;
-    private final DeadLetterQueue deadLetterQueue;
+    private final DeadLetterQueueProducer deadLetterQueueProducer;
 
     @KafkaListener(topics = "${kafka.topic}", containerFactory = "linkUpdateConsumerKafkaFactory", concurrency = "1")
     public void listenForUpdates(LinkUpdateRequest updateRequest) {
         log.info(updateRequest.toString());
         Optional<String> errors = check(updateRequest);
         if (errors.isPresent()) {
-            deadLetterQueue.send(errors.get());
+            deadLetterQueueProducer.send(errors.get());
             return;
         }
         try {
             sender.send(updateRequest);
         } catch (Exception e) {
-            deadLetterQueue.send(e.getMessage());
+            deadLetterQueueProducer.send(e.getMessage());
         }
     }
 
