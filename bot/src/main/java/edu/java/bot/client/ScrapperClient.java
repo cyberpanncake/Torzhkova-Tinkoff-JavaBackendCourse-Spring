@@ -1,6 +1,7 @@
 package edu.java.bot.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.java.dto.api.exception.ScrapperApiException;
 import edu.java.dto.api.scrapper.AddLinkRequest;
 import edu.java.dto.api.scrapper.ApiErrorResponse;
 import edu.java.dto.api.scrapper.LinkResponse;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 public class ScrapperClient extends AbstractClient {
     private static final String CHAT_BASE_URL = "/tg-chat";
@@ -19,11 +21,11 @@ public class ScrapperClient extends AbstractClient {
     private static final String ID_PATH = "/{id}";
     private static final String CHAT_HEADER = "Tg-Chat-Id";
 
-    public ScrapperClient(@NonNull String baseUrl, ObjectMapper mapper) {
-        super(baseUrl, mapper);
+    public ScrapperClient(@NonNull String baseUrl, ObjectMapper mapper, Retry retry) {
+        super(baseUrl, mapper, retry);
     }
 
-    public void registerChat(long id) {
+    public void registerChat(long id) throws ScrapperApiException {
         client.post()
             .uri(uriBuilder -> uriBuilder
                 .path(CHAT_BASE_URL + ID_PATH)
@@ -31,10 +33,11 @@ public class ScrapperClient extends AbstractClient {
             .retrieve()
             .onStatus(HttpStatusCode::isError, this::getException)
             .bodyToMono(Void.class)
+            .retryWhen(retry)
             .block();
     }
 
-    public void deleteChat(long id) {
+    public void deleteChat(long id) throws ScrapperApiException {
         client.delete()
             .uri(uriBuilder -> uriBuilder
                 .path(CHAT_BASE_URL + ID_PATH)
@@ -42,20 +45,22 @@ public class ScrapperClient extends AbstractClient {
             .retrieve()
             .onStatus(HttpStatusCode::isError, this::getException)
             .bodyToMono(Void.class)
+            .retryWhen(retry)
             .block();
     }
 
-    public ListLinksResponse getLinks(long id) {
+    public ListLinksResponse getLinks(long id) throws ScrapperApiException {
         return client.get()
             .uri(LINK_BASE_URL)
             .header(CHAT_HEADER, String.valueOf(id))
             .retrieve()
             .onStatus(HttpStatusCode::isError, this::getException)
             .bodyToMono(ListLinksResponse.class)
+            .retryWhen(retry)
             .block();
     }
 
-    public LinkResponse addLink(long id, AddLinkRequest request) {
+    public LinkResponse addLink(long id, AddLinkRequest request) throws ScrapperApiException {
         return client.post()
             .uri(LINK_BASE_URL)
             .header(CHAT_HEADER, String.valueOf(id))
@@ -64,10 +69,11 @@ public class ScrapperClient extends AbstractClient {
             .retrieve()
             .onStatus(HttpStatusCode::isError, this::getException)
             .bodyToMono(LinkResponse.class)
+            .retryWhen(retry)
             .block();
     }
 
-    public LinkResponse deleteLink(long id, RemoveLinkRequest request) {
+    public LinkResponse deleteLink(long id, RemoveLinkRequest request) throws ScrapperApiException {
         return client.method(HttpMethod.DELETE)
             .uri(LINK_BASE_URL)
             .header(CHAT_HEADER, String.valueOf(id))
@@ -76,6 +82,7 @@ public class ScrapperClient extends AbstractClient {
             .retrieve()
             .onStatus(HttpStatusCode::isError, this::getException)
             .bodyToMono(LinkResponse.class)
+            .retryWhen(retry)
             .block();
     }
 

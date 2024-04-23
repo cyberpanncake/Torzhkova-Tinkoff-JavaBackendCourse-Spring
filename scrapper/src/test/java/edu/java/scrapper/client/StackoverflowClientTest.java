@@ -9,6 +9,7 @@ import edu.java.scrapper.configuration.ObjectMapperConfig;
 import edu.java.scrapper.client.sources.dto.StackoverflowResponse;
 import java.util.Map;
 import java.util.Optional;
+import edu.java.scrapper.configuration.RetryConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.util.UriComponentsBuilder;
+import reactor.util.retry.Retry;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -25,8 +27,10 @@ class StackoverflowClientTest {
     private WireMockServer server;
     private StackoverflowClient client;
     private final ObjectMapper mapper;
+    private final Retry retry;
 
     StackoverflowClientTest() {
+        this.retry = new RetryConfig(false, null, 0, null, null).clientRetry();
         this.mapper = new ObjectMapperConfig().objectMapper();
     }
 
@@ -34,7 +38,7 @@ class StackoverflowClientTest {
     void setUp() {
         server = new WireMockServer();
         server.start();
-        client = new StackoverflowClient(server.baseUrl(), mapper);
+        client = new StackoverflowClient(server.baseUrl(), mapper, retry);
     }
 
     @AfterEach

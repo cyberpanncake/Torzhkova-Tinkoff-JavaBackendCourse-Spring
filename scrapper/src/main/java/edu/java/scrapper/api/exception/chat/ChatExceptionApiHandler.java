@@ -14,7 +14,7 @@ public class ChatExceptionApiHandler {
     public ResponseEntity<ApiErrorResponse> chatRegistrationException(ChatAlreadyRegisteredException exception) {
         ApiErrorResponse error = new ApiErrorResponse(
             "Чат уже зарегистрирован",
-            HttpStatus.BAD_REQUEST.toString(),
+            HttpStatus.BAD_REQUEST.getReasonPhrase(),
             exception.getClass().getName(),
             exception.getMessage(),
             Arrays.stream(exception.getStackTrace())
@@ -30,7 +30,7 @@ public class ChatExceptionApiHandler {
     public ResponseEntity<ApiErrorResponse> chatNotFoundException(ChatNotFoundException exception) {
         ApiErrorResponse error = new ApiErrorResponse(
             "Чат не найден",
-            HttpStatus.NOT_FOUND.toString(),
+            HttpStatus.NOT_FOUND.getReasonPhrase(),
             exception.getClass().getName(),
             exception.getMessage(),
             Arrays.stream(exception.getStackTrace())
@@ -46,7 +46,7 @@ public class ChatExceptionApiHandler {
     public ResponseEntity<ApiErrorResponse> anyException(Exception exception) {
         ApiErrorResponse error = new ApiErrorResponse(
             "Произошла непредвиденная ошибка на стороне сервера",
-            HttpStatus.INTERNAL_SERVER_ERROR.toString(),
+            HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
             exception.getClass().getName(),
             exception.getMessage(),
             Arrays.stream(exception.getStackTrace())

@@ -6,10 +6,15 @@ spring:
     name: bot
   jackson:
     time-zone: UTC
+  cache:
+    cache-names:
+      - rate-limiting-bucket
+    caffeine:
+      spec: maximumSize=100000,expireAfterAccess=3600s
 
 resources:
   base-url:
-    scrapper: https://localhost:8080
+    scrapper: http://localhost:8080
 
 server:
   port: 8090
@@ -20,3 +25,26 @@ logging:
 springdoc:
   swagger-ui:
     path: /swagger-ui
+
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: rate-limiting-bucket
+      url: .*
+      http-status-code: TOO_MANY_REQUESTS
+      http-response-body: "{ \"description\": \"Too many requests\", \"code\": \"429\", \"exception_name\": \"\", \"exception_message\": \"\", \"stacktrace\": [] }"
+      rate-limits:
+        - cache-key: getHeader('X-Forwarded-For')
+          bandwidths:
+            - capacity: 1
+              time: 1
+              unit: minutes
+
+retry:
+  enable: true
+  max-attempts: 3
+  strategy: fixed
+  interval: 2000
+  codes:
+    - '500'
+    - '429'

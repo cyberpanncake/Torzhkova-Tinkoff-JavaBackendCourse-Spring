@@ -1,6 +1,6 @@
 package edu.java.dto.utils.exception;
 
-public abstract class SourceException extends LinkException {
+public abstract class SourceException extends UrlException {
     public SourceException() {
     }
 

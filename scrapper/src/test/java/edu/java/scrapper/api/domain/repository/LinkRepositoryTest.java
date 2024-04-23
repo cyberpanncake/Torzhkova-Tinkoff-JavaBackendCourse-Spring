@@ -5,6 +5,7 @@ import edu.java.scrapper.api.domain.dto.Link;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import java.net.URI;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public abstract class LinkRepositoryTest extends IntegrationTest {
     private static final URI URL =
         URI.create("https://github.com/cyberpanncake/Torzhkova-Tinkoff-JavaBackendCourse-Spring/");
@@ -26,7 +29,6 @@ public abstract class LinkRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    @Transactional
     @Rollback
     void addTest() {
         Link expected = new Link(null, URL, NOW, NOW);
@@ -35,7 +37,6 @@ public abstract class LinkRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    @Transactional
     @Rollback
     void addDuplicateExceptionTest() {
         Link link = new Link(null, URL, NOW, NOW);
@@ -44,7 +45,6 @@ public abstract class LinkRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    @Transactional
     @Rollback
     void findByUrlTest() {
         Link link = new Link(null, URL, NOW, NOW);
@@ -54,7 +54,6 @@ public abstract class LinkRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    @Transactional
     @Rollback
     void findByUrlNotExistTest() {
         Optional<Link> actual = repo.findByUrl(URL);
@@ -62,7 +61,6 @@ public abstract class LinkRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    @Transactional
     @Rollback
     void deleteTest() {
         Link link = new Link(null, URL, NOW, NOW);
@@ -73,7 +71,6 @@ public abstract class LinkRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    @Transactional
     @Rollback
     void findAllTest() {
         Link link1 = new Link(null, URL, NOW, NOW);
