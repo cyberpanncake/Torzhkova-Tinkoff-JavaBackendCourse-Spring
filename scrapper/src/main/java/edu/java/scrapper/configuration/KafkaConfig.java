@@ -14,9 +14,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-import org.springframework.validation.annotation.Validated;
 
-@Validated
 @ConditionalOnProperty(prefix = "app", name = "use-queue")
 @ConfigurationProperties(prefix = "kafka", ignoreUnknownFields = false)
 public record KafkaConfig(String servers, String topic) {
