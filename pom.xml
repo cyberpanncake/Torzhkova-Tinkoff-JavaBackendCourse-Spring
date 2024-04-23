@@ -32,6 +32,8 @@
         <bucket4j-starter.version>0.12.5</bucket4j-starter.version>
         <caffeine.version>3.1.8</caffeine.version>
         <jcache.version>3.1.8</jcache.version>
+        <micrometer-prometheus.version>1.12.4</micrometer-prometheus.version>
+        <micrometer-brave.version>1.2.4</micrometer-brave.version>
 
         <!-- Tests -->
         <testcontainers.version>1.19.4</testcontainers.version>
