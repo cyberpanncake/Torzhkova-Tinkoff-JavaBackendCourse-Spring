@@ -5,10 +5,8 @@ import edu.java.dto.retry.RetryBuilder;
 import java.time.Duration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.validation.annotation.Validated;
 import reactor.util.retry.Retry;
 
-@Validated
 @ConfigurationProperties(prefix = "retry", ignoreUnknownFields = false)
 public record RetryConfig(Boolean enable, String[] codes, int maxAttempts, BackoffStrategy strategy,
                           Duration interval) {
