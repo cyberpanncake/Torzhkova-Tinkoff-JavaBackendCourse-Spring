@@ -5,7 +5,6 @@ import edu.java.dto.api.scrapper.ApiErrorResponse;
 import edu.java.dto.api.scrapper.LinkResponse;
 import edu.java.dto.api.scrapper.ListLinksResponse;
 import edu.java.dto.api.scrapper.RemoveLinkRequest;
-import edu.java.scrapper.api.domain.dto.Link;
 import edu.java.scrapper.api.exception.chat.ChatNotFoundException;
 import edu.java.scrapper.api.exception.link.LinkAdditionException;
 import edu.java.scrapper.api.exception.link.LinkNotFoundException;
@@ -17,7 +16,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,13 +46,8 @@ public class LinkController {
     @GetMapping
     public ResponseEntity<ListLinksResponse> getLinks(@RequestHeader(name = "Tg-Chat-Id") long chatId)
         throws ChatNotFoundException {
-        List<Link> links = service.listAll(chatId);
-        return ResponseEntity.ok(new ListLinksResponse(
-            links.stream()
-                .map(l -> new LinkResponse(l.id(), l.url()))
-                .toArray(LinkResponse[]::new),
-            links.size()
-        ));
+        LinkResponse[] links = service.listAll(chatId).toArray(LinkResponse[]::new);
+        return ResponseEntity.ok(new ListLinksResponse(links, links.length));
     }
 
     @Operation(summary = "Добавить отслеживание ссылки")
@@ -71,8 +64,8 @@ public class LinkController {
         @RequestHeader(name = "Tg-Chat-Id") long chatId,
         @Valid @RequestBody AddLinkRequest request
     ) throws LinkAdditionException, ChatNotFoundException {
-        Link link = service.add(chatId, URI.create(request.link()));
-        return ResponseEntity.ok(new LinkResponse(link.id(), link.url()));
+        LinkResponse link = service.add(chatId, URI.create(request.link()));
+        return ResponseEntity.ok(link);
     }
 
     @Operation(summary = "Убрать отслеживание ссылки")
@@ -92,7 +85,7 @@ public class LinkController {
         @RequestHeader(name = "Tg-Chat-Id") long chatId,
         @Valid @RequestBody RemoveLinkRequest request
     ) throws ChatNotFoundException, LinkNotFoundException {
-        Link link = service.remove(chatId, URI.create(request.link()));
-        return ResponseEntity.ok(new LinkResponse(link.id(), link.url()));
+        LinkResponse link = service.remove(chatId, URI.create(request.link()));
+        return ResponseEntity.ok(link);
     }
 }

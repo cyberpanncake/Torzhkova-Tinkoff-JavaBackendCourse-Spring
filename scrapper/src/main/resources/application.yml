@@ -3,12 +3,13 @@ app:
     enable: true
     interval: 10000
     force-check-delay: 300000
+  database-access-type: jpa
 
 resources:
   base-url:
     github: https://api.github.com/
     stackoverflow: https://api.stackexchange.com/2.3/
-    bot: https://localhost:8090
+    bot: http://localhost:8090
 
 spring:
   application:

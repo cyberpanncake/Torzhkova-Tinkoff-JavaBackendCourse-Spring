@@ -1,4 +1,4 @@
-package edu.java.bot.telegram.exception.parameter;
+package edu.java.bot.telegram.command.exception.parameter;
 
 public class WrongNumberParametersException extends ParameterException {
 

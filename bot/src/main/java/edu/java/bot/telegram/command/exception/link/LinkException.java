@@ -1,8 +1,6 @@
-package edu.java.dto.utils.exception;
+package edu.java.bot.telegram.command.exception.link;
 
 public abstract class LinkException extends Exception {
-    public LinkException() {
-    }
 
     public LinkException(String message) {
         super(message);

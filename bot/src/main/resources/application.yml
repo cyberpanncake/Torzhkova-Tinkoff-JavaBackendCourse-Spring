@@ -9,7 +9,7 @@ spring:
 
 resources:
   base-url:
-    scrapper: https://localhost:8080
+    scrapper: http://localhost:8080
 
 server:
   port: 8090

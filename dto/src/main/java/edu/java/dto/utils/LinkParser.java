@@ -1,6 +1,6 @@
 package edu.java.dto.utils;
 
-import edu.java.dto.utils.exception.NotLinkException;
+import edu.java.dto.utils.exception.NotUrlException;
 import edu.java.dto.utils.exception.SourceException;
 import edu.java.dto.utils.exception.SourceNotSupportedException;
 import edu.java.dto.utils.sources.info.SourceInfo;
@@ -25,7 +25,7 @@ public class LinkParser {
         this.checkIsLinkAvailable = checkIsLinkAvailable;
     }
 
-    public LinkInfo parse(String link) throws NotLinkException, SourceException {
+    public LinkInfo parse(String link) throws NotUrlException, SourceException {
         URI uri = tryMakeURI(link);
         if (checkIsLinkAvailable) {
             checkIsLinkAvailable(uri);
@@ -34,15 +34,15 @@ public class LinkParser {
         return new LinkInfo(uri, sourceInfo);
     }
 
-    private static URI tryMakeURI(String link) throws NotLinkException {
+    private static URI tryMakeURI(String link) throws NotUrlException {
         try {
             return new URI(link);
         } catch (URISyntaxException e) {
-            throw new NotLinkException(NOT_LINK_MESSAGE);
+            throw new NotUrlException(NOT_LINK_MESSAGE);
         }
     }
 
-    private static void checkIsLinkAvailable(URI uri) throws NotLinkException {
+    private static void checkIsLinkAvailable(URI uri) throws NotUrlException {
         HttpURLConnection connection = null;
         try {
             URL url = uri.toURL();
@@ -50,12 +50,12 @@ public class LinkParser {
             connection.setRequestMethod("HEAD");
             int response = connection.getResponseCode();
             if (response != HttpURLConnection.HTTP_OK) {
-                throw new NotLinkException("Ссылка не существует или недоступна");
+                throw new NotUrlException("Ссылка не существует или недоступна");
             }
-        } catch (NotLinkException e) {
+        } catch (NotUrlException e) {
             throw e;
         } catch (Exception e) {
-            throw new NotLinkException(NOT_LINK_MESSAGE);
+            throw new NotUrlException(NOT_LINK_MESSAGE);
         } finally {
             if (connection != null) {
                 connection.disconnect();

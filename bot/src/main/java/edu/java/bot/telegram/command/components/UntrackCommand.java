@@ -1,23 +1,28 @@
 package edu.java.bot.telegram.command.components;
 
-import edu.java.bot.client.service.ScrapperService;
-import edu.java.bot.telegram.command.AbstractServiceCommand;
+import edu.java.bot.client.ScrapperApiException;
+import edu.java.bot.client.ScrapperClient;
+import edu.java.bot.telegram.command.AbstractClientCommand;
 import edu.java.bot.telegram.command.CommandUtils;
-import edu.java.bot.telegram.exception.UnregisteredUserException;
-import edu.java.bot.telegram.exception.parameter.ParameterException;
+import edu.java.bot.telegram.command.exception.CommandExecutionException;
+import edu.java.bot.telegram.command.exception.chat.ChatException;
+import edu.java.bot.telegram.command.exception.chat.ChatNotFoundException;
+import edu.java.bot.telegram.command.exception.link.LinkException;
+import edu.java.bot.telegram.command.exception.link.LinkNotFoundException;
+import edu.java.bot.telegram.command.exception.parameter.ParameterException;
+import edu.java.dto.api.scrapper.RemoveLinkRequest;
 import edu.java.dto.utils.LinkParser;
-import edu.java.dto.utils.exception.LinkException;
-import edu.java.dto.utils.exception.LinkRegistrationException;
+import edu.java.dto.utils.exception.UrlException;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
 @Order(4)
-public class UntrackCommand extends AbstractServiceCommand {
+public class UntrackCommand extends AbstractClientCommand {
     private final LinkParser parser;
 
-    public UntrackCommand(ScrapperService service, LinkParser parser) {
-        super(service);
+    public UntrackCommand(ScrapperClient client, LinkParser parser) {
+        super(client);
         this.parser = parser;
     }
 
@@ -32,16 +37,23 @@ public class UntrackCommand extends AbstractServiceCommand {
     }
 
     @Override
-    protected String doAction(Long userId, String[] params)
-        throws ParameterException, UnregisteredUserException, LinkException {
+    protected String doAction(Long tgId, String[] params) throws ParameterException, UrlException, ChatException,
+        LinkException, CommandExecutionException {
         CommandUtils.checkParamsNumber(params, 1);
         String link = params[0];
         parser.parse(link);
-        CommandUtils.checkUserRegistration(userId, service);
-        if (!service.isLinkRegistered(userId, link)) {
-            throw new LinkRegistrationException("Ссылка не была зарегистрирована");
+        try {
+            client.deleteLink(tgId, new RemoveLinkRequest(link));
+        } catch (ScrapperApiException e) {
+            if ("ChatNotFoundException".equals(e.getError().exceptionName())) {
+                throw new ChatNotFoundException("Вы не зарегистрировались, для регистрации введите команду /start");
+            }
+            if ("LinkNotFoundException".equals(e.getError().exceptionName())) {
+                throw new LinkNotFoundException("Вы не отслеживаете эту ссылку");
+            }
+            throw new CommandExecutionException(
+                "Не удалось удалить ссылку из отслеживаемых. Попробуйте повторить запрос позже");
         }
-        service.deleteLink(userId, link);
         return "Ссылка удалена из отслеживаемых";
     }
 }

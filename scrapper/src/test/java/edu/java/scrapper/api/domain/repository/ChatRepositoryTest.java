@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 public abstract class ChatRepositoryTest extends IntegrationTest {
     private static final long TG_ID = 11111;
     private final ChatRepository repo;
@@ -20,7 +21,6 @@ public abstract class ChatRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    @Transactional
     @Rollback
     void addTest() {
         Chat actual = repo.add(TG_ID);
@@ -28,7 +28,6 @@ public abstract class ChatRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    @Transactional
     @Rollback
     void addDuplicateExceptionTest() {
         repo.add(TG_ID);
@@ -36,7 +35,6 @@ public abstract class ChatRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    @Transactional
     @Rollback
     void findByTgIdTest() {
         Chat expected = repo.add(TG_ID);
@@ -45,7 +43,6 @@ public abstract class ChatRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    @Transactional
     @Rollback
     void findByTgIdNotExistTest() {
         Optional<Chat> actual = repo.findByTgId(TG_ID);
@@ -53,7 +50,6 @@ public abstract class ChatRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    @Transactional
     @Rollback
     void deleteTest() {
         repo.add(TG_ID);
@@ -63,7 +59,6 @@ public abstract class ChatRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    @Transactional
     @Rollback
     void findAllTest() {
         List<Chat> expected = new ArrayList<>();

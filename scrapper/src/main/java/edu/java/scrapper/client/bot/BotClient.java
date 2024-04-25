@@ -5,11 +5,14 @@ import edu.java.dto.api.bot.ApiErrorResponse;
 import edu.java.dto.api.bot.LinkUpdateRequest;
 import edu.java.scrapper.client.AbstractClient;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 public class BotClient extends AbstractClient {
 
     public BotClient(@NonNull String baseUrl, ObjectMapper mapper) {
@@ -17,14 +20,18 @@ public class BotClient extends AbstractClient {
     }
 
     public void sendUpdate(LinkUpdateRequest request) {
-        client.post()
-            .uri("/update")
-            .accept(MediaType.APPLICATION_JSON)
-            .body(Mono.just(request), LinkUpdateRequest.class)
-            .retrieve()
-            .onStatus(HttpStatusCode::isError, this::getException)
-            .bodyToMono(Void.class)
-            .block();
+        try {
+            client.post()
+                .uri("/updates")
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(request), LinkUpdateRequest.class)
+                .retrieve()
+                .onStatus(HttpStatusCode::isError, this::getException)
+                .bodyToMono(Void.class)
+                .block();
+        } catch (WebClientRequestException e) {
+            log.error("Приложение бота недоступно");
+        }
     }
 
     private Mono<BotApiException> getException(ClientResponse response) {

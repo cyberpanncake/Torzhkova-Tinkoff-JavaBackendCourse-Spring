@@ -4,7 +4,7 @@ import edu.java.dto.api.scrapper.ApiErrorResponse;
 import lombok.Getter;
 
 @Getter
-public class ScrapperApiException extends Exception {
+public class ScrapperApiException extends RuntimeException {
     private final ApiErrorResponse error;
 
     public ScrapperApiException(ApiErrorResponse error) {

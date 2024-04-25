@@ -3,7 +3,7 @@ package edu.java.bot.telegram.command.components;
 import edu.java.bot.telegram.command.AbstractCommand;
 import edu.java.bot.telegram.command.Command;
 import edu.java.bot.telegram.command.CommandUtils;
-import edu.java.bot.telegram.exception.parameter.ParameterException;
+import edu.java.bot.telegram.command.exception.parameter.ParameterException;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.core.annotation.Order;
@@ -29,7 +29,7 @@ public class HelpCommand extends AbstractCommand {
     }
 
     @Override
-    protected String doAction(Long userId, String[] params) throws ParameterException {
+    protected String doAction(Long tgId, String[] params) throws ParameterException {
         CommandUtils.checkParamsNumber(params, 0);
         return commands.stream()
             .map(c -> "/%s — %s".formatted(c.getName(), c.getDescription()))
