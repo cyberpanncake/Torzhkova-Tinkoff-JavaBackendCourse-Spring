@@ -16,6 +16,7 @@ import edu.java.bot.telegram.command.exception.command.CommandException;
 import edu.java.bot.telegram.command.exception.link.LinkException;
 import edu.java.bot.telegram.command.exception.parameter.ParameterException;
 import edu.java.dto.utils.exception.UrlException;
+import io.micrometer.core.instrument.Counter;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +28,18 @@ import org.springframework.stereotype.Component;
 public class TgBotController {
     private final TelegramBot bot;
     private final TelegramBotConfig botConfig;
+    private final Counter messagesSuccessCounter;
+    private final Counter messagesErrorsCounter;
 
     @Autowired
-    public TgBotController(ApplicationConfig config, TelegramBotConfig botConfig) {
+    public TgBotController(
+        ApplicationConfig config, TelegramBotConfig botConfig,
+        Counter messagesSuccessCounter,
+        Counter messagesErrorsCounter
+    ) {
         this.botConfig = botConfig;
+        this.messagesSuccessCounter = messagesSuccessCounter;
+        this.messagesErrorsCounter = messagesErrorsCounter;
         bot = botConfig.telegramBot(config);
         bot.setUpdatesListener(this::processUpdates, this::processException);
     }
@@ -41,18 +50,21 @@ public class TgBotController {
                 continue;
             }
             long chatId = update.message().chat().id();
-            String message = "";
+            String message;
             Command command;
             try {
                 command = AbstractCommand.parse(update, botConfig.commands());
                 message = command.execute(update);
+                messagesSuccessCounter.increment();
             } catch (CommandException | ParameterException | UrlException | ChatException | CommandExecutionException
                      | LinkException e) {
                 message = e.getMessage();
+                messagesSuccessCounter.increment();
             } catch (Exception e) {
                 message = "Возникла непредвиденная ошибка, попробуйте повторить запрос позже";
                 log.error("%s. Чат %d. Сообщение: \"%s\". Ошибка: \"%s\""
                     .formatted(LocalDateTime.now(), chatId, update.message().text(), e.getMessage()));
+                messagesErrorsCounter.increment();
             }
             if (!message.isEmpty()) {
                 SendResponse response = bot.execute(new SendMessage(chatId, message));
