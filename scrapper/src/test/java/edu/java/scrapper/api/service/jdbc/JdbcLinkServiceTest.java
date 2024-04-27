@@ -1,7 +1,7 @@
 package edu.java.scrapper.api.service.jdbc;
 
-import edu.java.scrapper.api.domain.repository.LinkRepository;
-import edu.java.scrapper.api.domain.repository.SubscriptionRepository;
+import edu.java.scrapper.api.domain.repository.jdbc.JdbcLinkRepository;
+import edu.java.scrapper.api.domain.repository.jdbc.JdbcSubscriptionRepository;
 import edu.java.scrapper.api.service.ChatService;
 import edu.java.scrapper.api.service.LinkService;
 import edu.java.scrapper.api.service.LinkServiceTest;
@@ -17,7 +17,7 @@ public class JdbcLinkServiceTest extends LinkServiceTest {
     @Autowired
     protected JdbcLinkServiceTest(
         LinkService linkService, ChatService chatService,
-        LinkRepository linkRepo, SubscriptionRepository subscriptionRepo
+        JdbcLinkRepository linkRepo, JdbcSubscriptionRepository subscriptionRepo
     ) {
         super(linkService, chatService, linkRepo, subscriptionRepo);
     }
