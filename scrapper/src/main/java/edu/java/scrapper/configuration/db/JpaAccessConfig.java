@@ -9,6 +9,7 @@ import edu.java.scrapper.api.service.LinkUpdater;
 import edu.java.scrapper.api.service.jpa.JpaChatService;
 import edu.java.scrapper.api.service.jpa.JpaLinkService;
 import edu.java.scrapper.api.service.jpa.JpaLinkUpdater;
+import edu.java.scrapper.api.service.updates.LinkUpdateSender;
 import edu.java.scrapper.configuration.ApplicationConfig;
 import edu.java.scrapper.configuration.ClientConfig;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -31,9 +32,9 @@ public class JpaAccessConfig {
 
     @Bean
     public LinkUpdater linkUpdater(
-        ApplicationConfig config, ClientConfig clientConfig, LinkParser parser,
+        ApplicationConfig config, ClientConfig clientConfig, LinkUpdateSender sender, LinkParser parser,
         JpaLinkRepository linkRepo
     ) {
-        return new JpaLinkUpdater(config, clientConfig, parser, linkRepo);
+        return new JpaLinkUpdater(config, clientConfig, sender, parser, linkRepo);
     }
 }

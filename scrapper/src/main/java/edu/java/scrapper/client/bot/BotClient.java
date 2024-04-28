@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.java.dto.api.bot.ApiErrorResponse;
 import edu.java.dto.api.bot.LinkUpdateRequest;
 import edu.java.dto.api.exception.BotApiException;
+import edu.java.scrapper.api.service.updates.UpdateSender;
 import edu.java.scrapper.client.AbstractClient;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -15,13 +16,13 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 @Slf4j
-public class BotClient extends AbstractClient {
+public class BotClient extends AbstractClient implements UpdateSender {
 
     public BotClient(@NonNull String baseUrl, ObjectMapper mapper, Retry retry) {
         super(baseUrl, mapper, retry);
     }
 
-    public void sendUpdate(LinkUpdateRequest request) {
+    public void send(LinkUpdateRequest request) {
         try {
             client.post()
                 .uri("/updates")

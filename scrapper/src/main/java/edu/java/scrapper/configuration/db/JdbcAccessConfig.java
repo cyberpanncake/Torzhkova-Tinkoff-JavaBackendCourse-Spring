@@ -10,6 +10,7 @@ import edu.java.scrapper.api.service.LinkUpdater;
 import edu.java.scrapper.api.service.jdbc.JdbcChatService;
 import edu.java.scrapper.api.service.jdbc.JdbcLinkService;
 import edu.java.scrapper.api.service.jdbc.JdbcLinkUpdater;
+import edu.java.scrapper.api.service.updates.LinkUpdateSender;
 import edu.java.scrapper.configuration.ApplicationConfig;
 import edu.java.scrapper.configuration.ClientConfig;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -33,10 +34,10 @@ public class JdbcAccessConfig {
     }
 
     @Bean
-    public LinkUpdater linkUpdater(ApplicationConfig config, ClientConfig clientConfig, LinkParser parser,
-        JdbcChatRepository chatRepo, JdbcLinkRepository linkRepo,
+    public LinkUpdater linkUpdater(ApplicationConfig config, ClientConfig clientConfig, LinkUpdateSender sender,
+        LinkParser parser, JdbcChatRepository chatRepo, JdbcLinkRepository linkRepo,
         JdbcSubscriptionRepository subscriptionRepo) {
-        return new JdbcLinkUpdater(config, clientConfig, parser,
+        return new JdbcLinkUpdater(config, clientConfig, sender, parser,
             chatRepo, linkRepo, subscriptionRepo);
     }
 }

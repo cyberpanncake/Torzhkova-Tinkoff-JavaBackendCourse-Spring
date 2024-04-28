@@ -4,6 +4,7 @@ app:
     interval: 10000
     force-check-delay: 300000
   database-access-type: jpa
+  use-queue: true
 
 resources:
   base-url:
@@ -28,6 +29,9 @@ spring:
       - rate-limiting-bucket
     caffeine:
       spec: maximumSize=100000,expireAfterAccess=3600s
+  kafka:
+    admin:
+      auto-create: false
 
 
 server:
@@ -50,7 +54,7 @@ bucket4j:
       rate-limits:
         - cache-key: getHeader('X-Forwarded-For')
           bandwidths:
-            - capacity: 1
+            - capacity: 10
               time: 1
               unit: minutes
 
@@ -62,6 +66,10 @@ retry:
   codes:
     - '500'
     - '429'
+
+kafka:
+  servers: localhost:29091
+  topic: updates
 
 management:
   server:

@@ -16,6 +16,7 @@ import edu.java.scrapper.api.domain.repository.jdbc.JdbcLinkRepository;
 import edu.java.scrapper.api.domain.repository.jdbc.JdbcSubscriptionRepository;
 import edu.java.scrapper.api.service.LinkUpdater;
 import edu.java.scrapper.api.service.ScrapperService;
+import edu.java.scrapper.api.service.updates.LinkUpdateSender;
 import edu.java.scrapper.client.sources.ResponseException;
 import edu.java.scrapper.configuration.ApplicationConfig;
 import edu.java.scrapper.configuration.ClientConfig;
@@ -37,10 +38,11 @@ public class JdbcLinkUpdater extends ScrapperService implements LinkUpdater {
     private static final String ERROR_LOG = "%s: %s";
     private final ApplicationConfig.Scheduler scheduler;
     private final ClientConfig clientConfig;
+    private final LinkUpdateSender sender;
     private final LinkParser parser;
 
     public JdbcLinkUpdater(
-        ApplicationConfig config, ClientConfig clientConfig, LinkParser parser,
+        ApplicationConfig config, ClientConfig clientConfig, LinkUpdateSender sender, LinkParser parser,
         JdbcChatRepository chatRepo, JdbcLinkRepository linkRepo,
         JdbcSubscriptionRepository subscriptionRepo
     ) {
@@ -48,6 +50,7 @@ public class JdbcLinkUpdater extends ScrapperService implements LinkUpdater {
         this.scheduler = config.scheduler();
         this.parser = parser;
         this.clientConfig = clientConfig;
+        this.sender = sender;
     }
 
     @Override
@@ -81,7 +84,7 @@ public class JdbcLinkUpdater extends ScrapperService implements LinkUpdater {
             return;
         }
         try {
-            clientConfig.botClient().sendUpdate(new LinkUpdateRequest(
+            sender.send(new LinkUpdateRequest(
                 link.id(),
                 link.url(),
                 "Новое обновление по ссылке\n%s\n\nСоздано в %s по Гринвичу"
@@ -113,7 +116,7 @@ public class JdbcLinkUpdater extends ScrapperService implements LinkUpdater {
             subscriptionRepo.remove(subscription);
         }
         linkRepo.remove(link.url());
-        clientConfig.botClient().sendUpdate(new LinkUpdateRequest(
+        sender.send(new LinkUpdateRequest(
             link.id(),
             link.url(),
             "Ссылка\n" + link.url() + "\n больше не доступна, поэтому она удалена из Ваших подписок",
