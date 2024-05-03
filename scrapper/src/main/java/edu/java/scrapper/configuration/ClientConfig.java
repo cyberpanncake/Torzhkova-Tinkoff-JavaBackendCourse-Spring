@@ -1,7 +1,6 @@
 package edu.java.scrapper.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.java.scrapper.client.bot.BotClient;
 import edu.java.scrapper.client.sources.GithubClient;
 import edu.java.scrapper.client.sources.StackoverflowClient;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +21,6 @@ public class ClientConfig {
     private String githubUrl;
     @Value("${resources.base-url.stackoverflow}")
     private String stackoverflowUrl;
-    @Value("${resources.base-url.bot}")
-    private String botUrl;
     private final ObjectMapper objectMapper;
     private final Retry retry;
 
@@ -43,10 +40,5 @@ public class ClientConfig {
             objectMapper,
             retry
         );
-    }
-
-    @Bean
-    public BotClient botClient() {
-        return new BotClient(botUrl, objectMapper, retry);
     }
 }
