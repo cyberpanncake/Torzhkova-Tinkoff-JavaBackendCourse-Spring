@@ -10,7 +10,6 @@ import edu.java.scrapper.api.exception.chat.ChatNotFoundException;
 import edu.java.scrapper.api.service.ChatService;
 import edu.java.scrapper.api.service.ScrapperService;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -25,20 +24,16 @@ public abstract class AbstractChatService extends ScrapperService implements Cha
 
     @Override
     public void register(long tgId) throws ChatAlreadyRegisteredException {
-        Optional<Chat> chat = chatRepo.findByTgId(tgId);
-        if (chat.isPresent()) {
+        chatRepo.findByTgId(tgId).ifPresent(ch -> {
             throw new ChatAlreadyRegisteredException();
-        }
+        });
         chatRepo.add(tgId);
     }
 
     @Override
     public void unregister(long tgId) throws ChatNotFoundException {
-        Optional<Chat> chat = chatRepo.findByTgId(tgId);
-        if (chat.isEmpty()) {
-            throw new ChatNotFoundException();
-        }
-        List<Subscription> subscriptions = subscriptionRepo.findAllByChat(chat.get());
+        Chat chat = chatRepo.findByTgId(tgId).orElseThrow(ChatNotFoundException::new);
+        List<Subscription> subscriptions = subscriptionRepo.findAllByChat(chat);
         for (Subscription subscription : subscriptions) {
             subscriptionRepo.remove(subscription);
             if (subscriptionRepo.linkNotFollowedByAnyone(subscription.linkId())) {

@@ -17,7 +17,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -32,35 +31,24 @@ public abstract class AbstractLinkService extends ScrapperService implements Lin
 
     @Override
     public LinkResponse add(long tgId, URI url) throws ChatNotFoundException, LinkAdditionException {
-        Optional<Subscription> subscription = subscriptionRepo.find(tgId, url);
-        if (subscription.isPresent()) {
+        subscriptionRepo.find(tgId, url).ifPresent(s -> {
             throw new LinkAdditionException();
-        }
-        Optional<Chat> chat = chatRepo.findByTgId(tgId);
-        if (chat.isEmpty()) {
-            throw new ChatNotFoundException();
-        }
-        Optional<Link> link = linkRepo.findByUrl(url);
-        if (link.isEmpty()) {
+        });
+        Chat chat = chatRepo.findByTgId(tgId).orElseThrow(ChatNotFoundException::new);
+        Link link = linkRepo.findByUrl(url).orElseGet(() -> {
             OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.SECONDS);
-            link = Optional.of(linkRepo.add(new Link(null, url, now, now)));
-        }
-        subscriptionRepo.add(new Subscription(chat.get().id(), link.get().id()));
-        return link.map(l -> new LinkResponse(l.id(), l.url())).get();
+            return linkRepo.add(new Link(null, url, now, now));
+        });
+        subscriptionRepo.add(new Subscription(chat.id(), link.id()));
+        return new LinkResponse(link.id(), link.url());
     }
 
     @Override
     public LinkResponse remove(long tgId, URI url) throws LinkNotFoundException, ChatNotFoundException {
-        Optional<Chat> chat = chatRepo.findByTgId(tgId);
-        if (chat.isEmpty()) {
-            throw new ChatNotFoundException();
-        }
-        Optional<Subscription> subscription = subscriptionRepo.find(tgId, url);
-        if (subscription.isEmpty()) {
-            throw new LinkNotFoundException();
-        }
-        Link link = linkRepo.findById(subscription.get().linkId()).get();
-        subscriptionRepo.remove(subscription.get());
+        chatRepo.findByTgId(tgId).orElseThrow(ChatNotFoundException::new);
+        Subscription subscription = subscriptionRepo.find(tgId, url).orElseThrow(LinkNotFoundException::new);
+        Link link = linkRepo.findById(subscription.linkId()).get();
+        subscriptionRepo.remove(subscription);
         if (subscriptionRepo.linkNotFollowedByAnyone(link.id())) {
             linkRepo.remove(link.id());
         }
@@ -69,11 +57,8 @@ public abstract class AbstractLinkService extends ScrapperService implements Lin
 
     @Override
     public List<LinkResponse> listAll(long tgId) throws ChatNotFoundException {
-        Optional<Chat> chat = chatRepo.findByTgId(tgId);
-        if (chat.isEmpty()) {
-            throw new ChatNotFoundException();
-        }
-        return subscriptionRepo.findAllLinksByChat(chat.get()).stream()
+        Chat chat = chatRepo.findByTgId(tgId).orElseThrow(ChatNotFoundException::new);
+        return subscriptionRepo.findAllLinksByChat(chat).stream()
             .map(l -> new LinkResponse(l.id(), l.url()))
             .toList();
     }
