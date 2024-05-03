@@ -1,4 +1,4 @@
 package edu.java.scrapper.api.exception.chat;
 
-public class ChatAlreadyRegisteredException extends Exception {
+public class ChatAlreadyRegisteredException extends RuntimeException {
 }
