@@ -53,7 +53,7 @@ retry:
     - '429'
 
 kafka:
-  enable: true
+  enable: false
   servers: localhost:29091
   topic: updates
   consumer-group: message-group

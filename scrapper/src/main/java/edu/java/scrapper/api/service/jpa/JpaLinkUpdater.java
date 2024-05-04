@@ -84,8 +84,8 @@ public class JpaLinkUpdater implements LinkUpdater {
             sender.send(new LinkUpdateRequest(
                 link.getId(),
                 link.getUrl(),
-                "Новое обновление по ссылке\n%s\n\nСоздано в %s по Гринвичу"
-                    .formatted(link.getUrl(), update.getCreatedAt()
+                "Новое обновление по ссылке\n%s\n%s\n\nСоздано в %s по Гринвичу"
+                    .formatted(link.getUrl(), update.getDetails(), update.getCreatedAt()
                         .format(DateTimeFormatter.ofPattern("HH:mm (dd.MM.yyyy г.)"))),
                 subscribers.stream().map(Chat::getTgId).toArray(Long[]::new)
             ));

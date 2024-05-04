@@ -3,8 +3,8 @@ app:
     enable: true
     interval: 10000
     force-check-delay: 300000
-  database-access-type: jpa
-  use-queue: true
+  database-access-type: jooq
+  use-queue: false
 
 resources:
   base-url:

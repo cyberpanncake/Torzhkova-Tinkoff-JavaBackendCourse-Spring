@@ -5,8 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import edu.java.scrapper.client.sources.ResponseException;
 import edu.java.scrapper.client.sources.StackoverflowClient;
+import edu.java.scrapper.client.sources.dto.stackoverflow.StackoverflowAnswer;
 import edu.java.scrapper.configuration.ObjectMapperConfig;
-import edu.java.scrapper.client.sources.dto.StackoverflowResponse;
+import edu.java.scrapper.client.sources.dto.SourceUpdate;
 import java.util.Map;
 import java.util.Optional;
 import edu.java.scrapper.configuration.RetryConfig;
@@ -49,7 +50,8 @@ class StackoverflowClientTest {
     @Test
     public void getUpdate_Ok() throws ResponseException {
         long questionId = 78055556;
-        String response = """
+
+        String response1 = """
             {
               "items": [
                 {
@@ -77,7 +79,7 @@ class StackoverflowClientTest {
               "quota_remaining": 294
             }
             """;
-        String uri = UriComponentsBuilder.newInstance()
+        String uri1 = UriComponentsBuilder.newInstance()
             .path("/questions/{questionId}/answers")
             .uriVariables(Map.of("questionId", questionId))
             .queryParam("site", "stackoverflow")
@@ -86,13 +88,63 @@ class StackoverflowClientTest {
             .queryParam("pagesize", 1)
             .build()
             .toUriString();
-        stubFor(get(urlEqualTo(uri))
+        stubFor(get(urlEqualTo(uri1))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .withBody(response)));
-        Optional<StackoverflowResponse> expected = Optional.ofNullable(parse(response));
-        Optional<StackoverflowResponse> actual = client.getUpdate(questionId);
+                .withBody(response1)));
+
+        String response2 = """
+            {
+              "items": [
+                {
+                  "owner": {
+                    "account_id": 6924911,
+                    "reputation": 4897,
+                    "user_id": 5316255,
+                    "user_type": "registered",
+                    "accept_rate": 55,
+                    "profile_image": "https://i.stack.imgur.com/BYJ8v.jpg?s=256&g=1",
+                    "display_name": "Saurabh Tiwari",
+                    "link": "https://stackoverflow.com/users/5316255/saurabh-tiwari"
+                  },
+                  "reply_to_user": {
+                    "account_id": 18670408,
+                    "reputation": 875,
+                    "user_id": 13609359,
+                    "user_type": "registered",
+                    "profile_image": "https://www.gravatar.com/avatar/eb7f0d944e98518ba472548d46535905?s=256&d=identicon&r=PG&f=y&so-version=2",
+                    "display_name": "Slevin",
+                    "link": "https://stackoverflow.com/users/13609359/slevin"
+                  },
+                  "edited": false,
+                  "score": 0,
+                  "creation_date": 1708874491,
+                  "post_id": 78055556,
+                  "comment_id": 137608086,
+                  "content_license": "CC BY-SA 4.0"
+                }
+              ],
+              "has_more": true,
+              "quota_max": 300,
+              "quota_remaining": 272
+            }
+            """;
+        String uri2 = UriComponentsBuilder.newInstance()
+            .path("/questions/{questionId}/comments")
+            .uriVariables(Map.of("questionId", questionId))
+            .queryParam("site", "stackoverflow")
+            .queryParam("pagesize", 1)
+            .build()
+            .toUriString();
+        stubFor(get(urlEqualTo(uri2))
+            .willReturn(aResponse()
+                .withStatus(200)
+                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .withBody(response2)));
+
+        Optional<SourceUpdate> expected = Optional.ofNullable(parse(response1));
+        Optional<SourceUpdate> actual = client.getUpdate(questionId);
         Assertions.assertEquals(expected, actual);
     }
 
@@ -123,11 +175,11 @@ class StackoverflowClientTest {
         Assertions.assertThrows(ResponseException.class, () -> client.getUpdate(questionId));
     }
 
-    private StackoverflowResponse parse(String json) {
+    private SourceUpdate parse(String json) {
         try {
             JsonNode rootNode = mapper.readTree(json);
             JsonNode update = rootNode.get("items").get(0);
-            return mapper.treeToValue(update, StackoverflowResponse.class);
+            return mapper.treeToValue(update, StackoverflowAnswer.class);
         } catch (Exception e) {
             return null;
         }
